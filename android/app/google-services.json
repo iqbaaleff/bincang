@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "80924654068",
+    "project_id": "bincang-apps",
+    "storage_bucket": "bincang-apps.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80924654068:android:68fd2ac5281e0f233ba1a1",
+        "android_client_info": {
+          "package_name": "com.example.bincang"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-EgyrP47338K4Pds8sj19qf4atfd_h1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
