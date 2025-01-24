@@ -1,3 +1,4 @@
+import 'package:bincang/helper/navigate_pages.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:bincang/widget/my_drawer.dart';
@@ -72,7 +73,6 @@ class _HomepageState extends State<Homepage> {
         child: Icon(Icons.add),
       ),
       body: _buildPostList(listeningProvider.allPost),
-      
     );
   }
 
@@ -86,7 +86,11 @@ class _HomepageState extends State<Homepage> {
             itemBuilder: (context, index) {
               final post = posts[index];
 
-              return MyPostsTile(post: post);
+              return MyPostsTile(
+                post: post,
+                onUserTap: () => goUserPage(context, post.uid),
+                onPostTap: () => goPostPage(context, post),
+              );
             },
           );
   }
