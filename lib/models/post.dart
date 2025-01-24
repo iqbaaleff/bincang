@@ -30,14 +30,14 @@ class Post {
         username: doc['username'],
         message: doc['message'],
         timestamp: doc['timestamp'],
-        likeCount: doc['likeCount'],
-        likedBy: List<String>.from(doc['likedBy' ?? []]));
+        likeCount: doc['likes'],
+        likedBy: List<String>.from(doc['likedBy'] ?? []));
   }
 
   // App -> firebase
   Map<String, dynamic> toMap() {
     return {
-      'id':id,
+      'id': id,
       'uid': uid,
       'name': name,
       'username': username,

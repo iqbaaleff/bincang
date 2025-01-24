@@ -11,9 +11,10 @@ class MyBioBox extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(12), bottomRight: Radius.circular(12)),
-        border: Border.all(
-          width: 2,
-        ),
+        // border: Border.all(
+        //   width: 2,
+        // ),
+        color: Colors.white,
       ),
       padding: EdgeInsets.all(25),
       child: Text(

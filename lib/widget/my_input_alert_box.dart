@@ -20,26 +20,33 @@ class MyInputAlertBox extends StatelessWidget {
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
       ),
-      content: TextField(
-        controller: textController,
-        maxLength: 140,
-        maxLines: 3,
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.black,
+      content: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: TextField(
+          controller: textController,
+          maxLength: 140,
+          maxLines: 3,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20)),
             ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.black,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20)),
             ),
-            borderRadius: BorderRadius.circular(12),
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.black54),
+            counterStyle: TextStyle(color: Colors.black54),
           ),
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.black54),
-          counterStyle: TextStyle(color: Colors.black54),
         ),
       ),
       actions: [
@@ -67,7 +74,7 @@ class MyInputAlertBox extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: 10,
+              width: 8,
             ),
             TextButton(
               style: TextButton.styleFrom(

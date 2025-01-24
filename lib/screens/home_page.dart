@@ -2,6 +2,7 @@ import 'package:bincang/models/post.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:bincang/widget/my_drawer.dart';
 import 'package:bincang/widget/my_input_alert_box.dart';
+import 'package:bincang/widget/my_posts_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,27 +48,31 @@ class _HomepageState extends State<Homepage> {
   // User post message
   Future<void> postMessage(String message) async {
     await databaseProvider.postMessage(message);
+    await loadAllPost(); // Tambahkan ini agar daftar post diperbarui
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       drawer: MyDrawer(),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         title: const Text("Bincang"),
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12), bottomRight: Radius.circular(12)),
+        ),
         onPressed: _openPostMessage,
         child: Icon(Icons.add),
       ),
-      body: Consumer<DatabaseProvider>(
-        builder: (context, provider, child) {
-          return _buildPostList(provider.allPost);
-        },
-      ),
+      body: _buildPostList(listeningProvider.allPost),
+      
     );
   }
 
@@ -81,9 +86,7 @@ class _HomepageState extends State<Homepage> {
             itemBuilder: (context, index) {
               final post = posts[index];
 
-              return Container(
-                child: Text(post.message),
-              );
+              return MyPostsTile(post: post);
             },
           );
   }
