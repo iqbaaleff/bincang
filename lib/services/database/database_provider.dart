@@ -11,7 +11,7 @@ class DatabaseProvider extends ChangeNotifier {
   /*
     SERVICES
   */
-  // Get user profil given uid
+  // Get user profil
   Future<UserProfile?> userProfile(String uid) => _db.getUserFromFirebase(uid);
   // Update user bio
   Future<void> updateBio(String bio) => _db.updateUserBioInFirebase(bio);
@@ -19,11 +19,11 @@ class DatabaseProvider extends ChangeNotifier {
   /* 
     POST
   */
-  // Local list of post
+  // List post
   List<Post> _allPosts = [];
   // Get post
   List<Post> get allPost => _allPosts;
-  // Post message
+  // Post
   Future<void> postMessage(String message) async {
     await _db.postMessageInFirebase(message);
 
@@ -44,5 +44,13 @@ class DatabaseProvider extends ChangeNotifier {
   // Filter and return post given uid
   List<Post> filterUserPosts(String uid) {
     return _allPosts.where((post) => post.uid == uid).toList();
+  }
+
+  // Hapus post
+  Future<void> deletePost(String postId) async {
+    // hapus dari firebase
+    await _db.deletePostFromFirebase(postId);
+    // reload data
+    loadAllPost();
   }
 }

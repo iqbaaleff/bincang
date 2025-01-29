@@ -1,18 +1,73 @@
 import 'package:bincang/models/post.dart';
+import 'package:bincang/services/auth/auth_services.dart';
+import 'package:bincang/services/database/database_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyPostsTile extends StatefulWidget {
   final void Function()? onUserTap;
   final void Function()? onPostTap;
   final Post post;
-  const MyPostsTile({super.key, required this.post, this.onUserTap, this.onPostTap});
+  const MyPostsTile(
+      {super.key, required this.post, this.onUserTap, this.onPostTap});
 
   @override
   State<MyPostsTile> createState() => _MyPostsTileState();
 }
 
 class _MyPostsTileState extends State<MyPostsTile> {
+  late final listeningProvider = Provider.of<DatabaseProvider>(context);
+  late final databaseProvider =
+      Provider.of<DatabaseProvider>(context, listen: false);
+
+  void showOption() {
+    // Cek user
+    String currentId = AuthServices().getCurrentUid();
+    final bool isOwnPost = widget.post.uid == currentId;
+
+    // Pilihan
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              if (isOwnPost)
+                // Tombol hapus
+                ListTile(
+                  leading: Icon(Icons.delete),
+                  title: Text("Hapus"),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await databaseProvider.deletePost(widget.post.id);
+                  },
+                )
+              else ...{
+                // Report user
+                ListTile(
+                  leading: Icon(Icons.flag),
+                  title: Text("Laporkan"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                // Block user
+                ListTile(
+                  leading: Icon(Icons.block),
+                  title: Text("Blokir"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                )
+              },
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -41,7 +96,8 @@ class _MyPostsTileState extends State<MyPostsTile> {
                     color: Colors.black54,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.01),
                     child: Text(
                       widget.post.name,
                       style: TextStyle(
@@ -56,14 +112,19 @@ class _MyPostsTileState extends State<MyPostsTile> {
                       color: Colors.black54,
                     ),
                   ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: showOption,
+                    child: Icon(Icons.more_horiz),
+                  ),
                 ],
               ),
             ),
-      
+
             SizedBox(
               height: size.height * 0.004,
             ),
-      
+
             // Konten
             Text(widget.post.message),
           ],

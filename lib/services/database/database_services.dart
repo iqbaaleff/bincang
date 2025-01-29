@@ -103,6 +103,13 @@ class DatabaseServices {
   }
 
   // Delete post
+  Future<void> deletePostFromFirebase(String postId) async {
+    try {
+      await db.collection("Post").doc(postId).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
 
   // Get all post
   Future<List<Post>> getAllPostsFromFirebase() async {
