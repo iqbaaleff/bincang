@@ -21,6 +21,15 @@ class _MyPostsTileState extends State<MyPostsTile> {
   late final databaseProvider =
       Provider.of<DatabaseProvider>(context, listen: false);
 
+  // User tap like/unlike
+  void _toggleLikePost() async {
+    try {
+      await databaseProvider.toggleLike(widget.post.id);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void showOption() {
     // Cek user
     String currentId = AuthServices().getCurrentUid();
@@ -70,6 +79,11 @@ class _MyPostsTileState extends State<MyPostsTile> {
 
   @override
   Widget build(BuildContext context) {
+    // Apakah current user like post ini?
+    bool likedByCurrentUser =
+        listeningProvider.isPostLikedByCurrentUser(widget.post.id);
+
+    int likeCount = listeningProvider.getLikeCount(widget.post.id);
     final size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: widget.onPostTap,
@@ -126,7 +140,39 @@ class _MyPostsTileState extends State<MyPostsTile> {
             ),
 
             // Konten
-            Text(widget.post.message),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+              child: Text(widget.post.message),
+            ),
+
+            // Button like comment
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: _toggleLikePost,
+                  child: likedByCurrentUser
+                      ? Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : Icon(
+                          Icons.favorite_border,
+                          color: Colors.black54,
+                        ),
+                ),
+
+                // Like count
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                  child: Text(
+                    likeCount != 0 ? likeCount.toString() : '',
+                    style: TextStyle(
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

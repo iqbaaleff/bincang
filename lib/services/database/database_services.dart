@@ -126,4 +126,43 @@ class DatabaseServices {
   }
 
   // Get individual post
+
+  /*
+  LIKES
+  */
+  // Like post
+  Future<void> toggleLikeInFirebase(String postId) async {
+    try {
+      // Get id
+      String uid = auth.currentUser!.uid;
+      // Pergi ke doc buat postingan
+      DocumentReference postDoc = db.collection('Post').doc(postId);
+      // Eksekusi like
+      await db.runTransaction((transaction) async {
+        // Get post data
+        DocumentSnapshot postSnapshot = await transaction.get(postDoc);
+        // Get like dari user
+        List<String> likedBy = List<String>.from(postSnapshot['likedBy'] ?? []);
+        // Get jumlah like
+        int currentLikeCount = postSnapshot['likes'];
+        // If user belum like -> like
+        if (!likedBy.contains(uid)) {
+          likedBy.add(uid);
+
+          currentLikeCount++;
+        }
+        // if user sudah like -> unlike
+        else {
+          likedBy.remove(uid);
+          currentLikeCount--;
+        }
+
+        // Update ke firebase
+        transaction
+            .update(postDoc, {'likes': currentLikeCount, 'likedBy': likedBy});
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }
