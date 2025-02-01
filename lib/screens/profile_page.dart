@@ -74,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final allUserPost = listeningProvider.filterUserPosts(widget.uid);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(isLoading ? '' : user!.name),

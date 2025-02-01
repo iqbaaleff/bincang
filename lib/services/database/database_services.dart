@@ -1,3 +1,4 @@
+import 'package:bincang/models/comment.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/services/auth/auth_services.dart';
@@ -6,8 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseServices {
-  final FirebaseFirestore db = FirebaseFirestore.instance;
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   /*
     USER INFO
@@ -21,7 +22,7 @@ class DatabaseServices {
   }) async {
     try {
       // Ambil UID pengguna yang sedang login
-      String uid = auth.currentUser!.uid;
+      String uid = _auth.currentUser!.uid;
       String username = email.split("@")[0];
 
       // Buat objek user profile
@@ -37,7 +38,7 @@ class DatabaseServices {
       final userMap = user.toMap();
 
       // **Simpan data dengan UID sebagai document ID**
-      await db.collection('Users').doc(uid).set(userMap);
+      await _db.collection('Users').doc(uid).set(userMap);
 
       print("User info saved successfully!");
     } catch (e) {
@@ -48,7 +49,7 @@ class DatabaseServices {
   // Get user info
   Future<UserProfile?> getUserFromFirebase(String uid) async {
     try {
-      DocumentSnapshot userDoc = await db.collection("Users").doc(uid).get();
+      DocumentSnapshot userDoc = await _db.collection("Users").doc(uid).get();
 
       if (userDoc.exists) {
         return UserProfile.fromDocument(userDoc);
@@ -67,7 +68,7 @@ class DatabaseServices {
     String uid = AuthServices().getCurrentUid();
 
     try {
-      await db.collection('Users').doc(uid).update({'bio': bio});
+      await _db.collection('Users').doc(uid).update({'bio': bio});
     } catch (e) {
       print(e);
     }
@@ -80,7 +81,7 @@ class DatabaseServices {
   // Post message
   Future<void> postMessageInFirebase(String message) async {
     try {
-      String uid = auth.currentUser!.uid;
+      String uid = _auth.currentUser!.uid;
       UserProfile? user = await getUserFromFirebase(uid);
       // Create post
       Post newPost = Post(
@@ -96,7 +97,7 @@ class DatabaseServices {
 
       Map<String, dynamic> newPostMap = newPost.toMap();
 
-      await db.collection("Post").add(newPostMap);
+      await _db.collection("Post").add(newPostMap);
     } catch (e) {
       print(e);
     }
@@ -105,7 +106,7 @@ class DatabaseServices {
   // Delete post
   Future<void> deletePostFromFirebase(String postId) async {
     try {
-      await db.collection("Post").doc(postId).delete();
+      await _db.collection("Post").doc(postId).delete();
     } catch (e) {
       print(e);
     }
@@ -114,7 +115,7 @@ class DatabaseServices {
   // Get all post
   Future<List<Post>> getAllPostsFromFirebase() async {
     try {
-      QuerySnapshot snapshot = await db
+      QuerySnapshot snapshot = await _db
           .collection('Post')
           .orderBy('timestamp', descending: true)
           .get();
@@ -134,11 +135,11 @@ class DatabaseServices {
   Future<void> toggleLikeInFirebase(String postId) async {
     try {
       // Get id
-      String uid = auth.currentUser!.uid;
+      String uid = _auth.currentUser!.uid;
       // Pergi ke doc buat postingan
-      DocumentReference postDoc = db.collection('Post').doc(postId);
+      DocumentReference postDoc = _db.collection('Post').doc(postId);
       // Eksekusi like
-      await db.runTransaction((transaction) async {
+      await _db.runTransaction((transaction) async {
         // Get post data
         DocumentSnapshot postSnapshot = await transaction.get(postDoc);
         // Get like dari user
@@ -163,6 +164,59 @@ class DatabaseServices {
       });
     } catch (e) {
       print(e);
+    }
+  }
+
+  /* 
+  COMMENT
+  */
+  // Add comment
+  Future<void> addCommentInFirebase(String postId, message) async {
+    try {
+      // Get user
+      String uid = _auth.currentUser!.uid;
+      UserProfile? user = await getUserFromFirebase(uid);
+
+      // Buat Comment baru
+      Comment newComment = Comment(
+        id: '',
+        postId: postId,
+        uid: uid,
+        name: user!.name,
+        username: user!.username,
+        message: message,
+        timestamp: Timestamp.now(),
+      );
+
+      Map<String, dynamic> newCommentMap = newComment.toMap();
+
+      // Simpan data ke firebase
+      await _db.collection('Comments').add(newCommentMap);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Delete comment
+  Future<void> deleteCommentInFirebase(String commentId) async {
+    try {
+      await _db.collection('Comments').doc(commentId).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Fetch comment
+  Future<List<Comment>> getCommentFromFirebase(String postId) async {
+    try {
+      QuerySnapshot snapshot = await _db
+          .collection('Comments')
+          .where("postId", isEqualTo: postId)
+          .get();
+      return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 }

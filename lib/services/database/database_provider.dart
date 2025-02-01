@@ -1,3 +1,4 @@
+import 'package:bincang/models/comment.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/services/auth/auth_services.dart';
@@ -105,5 +106,29 @@ class DatabaseProvider extends ChangeNotifier {
       _likeCounts = likeCountOriginal;
       notifyListeners();
     }
+  }
+
+  /*
+  COMMENT
+  */
+  final Map<String, List<Comment>> _comments = {};
+  List<Comment> getComments(String postId) => _comments[postId] ?? [];
+  // Fetch comment dari db
+  Future<void> loadComments(String postId) async {
+    final allComments = await _db.getCommentFromFirebase(postId);
+    _comments[postId] = allComments;
+    notifyListeners();
+  }
+
+  // Add comment
+  Future<void> addComments(String postId, message) async {
+    await _db.addCommentInFirebase(postId, message);
+    await loadComments(postId);
+  }
+
+  // Delete comment
+  Future<void> deleteComments(String commentId, postId) async {
+    await _db.deleteCommentInFirebase(commentId);
+    await loadComments(postId);
   }
 }
