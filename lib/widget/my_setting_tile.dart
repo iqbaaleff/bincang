@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class SettingTile extends StatelessWidget {
-  const SettingTile({super.key});
+class MySettingTile extends StatelessWidget {
+  final String title;
+  final Widget action;
+  final void Function()? onTap;
+
+  const MySettingTile({super.key, required this.title, required this.action, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return const ListTile(
-      trailing: Icon(Icons.arrow_forward_ios),
-      title: Text("Bau tai"),
+    return ListTile(
+      onTap: onTap,
+      title: Text(title),
+      trailing: action,
     );
   }
 }

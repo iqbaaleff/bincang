@@ -1,3 +1,4 @@
+import 'package:bincang/helper/time_formatter.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_provider.dart';
@@ -91,12 +92,13 @@ class _MyPostsTileState extends State<MyPostsTile> {
                   },
                 )
               else ...{
-                // Report user
+                // Report userew
                 ListTile(
                   leading: Icon(Icons.flag),
                   title: Text("Laporkan"),
                   onTap: () {
                     Navigator.pop(context);
+                    _reportPostConfirmBox();
                   },
                 ),
                 // Block user
@@ -105,6 +107,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                   title: Text("Blokir"),
                   onTap: () {
                     Navigator.pop(context);
+                    _blockPostConfirmBox();
                   },
                 )
               },
@@ -112,6 +115,69 @@ class _MyPostsTileState extends State<MyPostsTile> {
           ),
         );
       },
+    );
+  }
+
+  void _reportPostConfirmBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Laporkan Postingan"),
+        content: Text("Apakah kamu yakin akan melaporkannya?"),
+        actions: [
+          // Batal
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Batal"),
+          ),
+          // Laporkan
+          TextButton(
+            onPressed: () async {
+              await databaseProvider.reportUser(
+                  widget.post.id, widget.post.uid);
+              Navigator.pop(context);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Postingan telah dilaporkan"),
+                ),
+              );
+            },
+            child: Text("Laporkan"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _blockPostConfirmBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Blokir pengguna"),
+        content: Text("Apakah kamu yakin?"),
+        actions: [
+          // Batal
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Batal"),
+          ),
+          // Block
+          TextButton(
+            onPressed: () async {
+              await databaseProvider.blockUser(widget.post.uid);
+              Navigator.pop(context);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("pengguna telah di blokir"),
+                ),
+              );
+            },
+            child: Text("Blokir"),
+          ),
+        ],
+      ),
     );
   }
 
@@ -160,7 +226,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                     ),
                   ),
                   Text(
-                    "@" + widget.post.username,
+                    "@${widget.post.username}",
                     style: TextStyle(
                       color: Colors.black54,
                     ),
@@ -236,6 +302,15 @@ class _MyPostsTileState extends State<MyPostsTile> {
                     style: TextStyle(
                       color: Colors.black54,
                     ),
+                  ),
+                ),
+
+                const Spacer(),
+
+                Text(
+                  formatTimestamp(widget.post.timestamp),
+                  style: TextStyle(
+                    color: Colors.black54,
                   ),
                 ),
               ],

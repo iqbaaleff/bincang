@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Coolvetica',
         useMaterial3: true,
       ),
-      home: const AuthGate(),
+      initialRoute: '/',
+      routes: {'/': (context) => const AuthGate()},
     );
   }
 }

@@ -74,6 +74,44 @@ class DatabaseServices {
     }
   }
 
+  // Delete user info
+  Future<void> deleteUserInfoFromFirebase(String uid) async {
+    WriteBatch batch = _db.batch();
+
+    // delete user doc
+    DocumentReference userDoc = _db.collection("Users").doc(uid);
+    batch.delete(userDoc);
+    // delete user post
+    QuerySnapshot userPosts =
+        await _db.collection("Posts").where('uid', isEqualTo: uid).get();
+    for (var post in userPosts.docs) {
+      batch.delete(post.reference);
+    }
+    // delete user comments
+    QuerySnapshot userComments =
+        await _db.collection("Comments").where('uid', isEqualTo: uid).get();
+    for (var comment in userComments.docs) {
+      batch.delete(comment.reference);
+    }
+    // delete like yang dilakukan user
+    QuerySnapshot allPosts = await _db.collection("Post").get();
+    for (QueryDocumentSnapshot post in allPosts.docs) {
+      Map<String, dynamic> postData = post.data() as Map<String, dynamic>;
+      var likedBy = postData['likedBy'] as List<dynamic>? ?? [];
+      if (likedBy.contains(uid)) {
+        batch.update(post.reference, {
+          'likedBy': FieldValue.arrayRemove([uid]),
+          'likes': FieldValue.increment(-1),
+        });
+      }
+    }
+
+    // update follower dan following record
+
+    // commit batch
+    await batch.commit();
+  }
+
   /*
    POST MESSAGE
   */
@@ -131,6 +169,7 @@ class DatabaseServices {
   /*
   LIKES
   */
+
   // Like post
   Future<void> toggleLikeInFirebase(String postId) async {
     try {
@@ -170,6 +209,7 @@ class DatabaseServices {
   /* 
   COMMENT
   */
+
   // Add comment
   Future<void> addCommentInFirebase(String postId, message) async {
     try {
@@ -216,6 +256,135 @@ class DatabaseServices {
       return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
     } catch (e) {
       print(e);
+      return [];
+    }
+  }
+
+  /* 
+  REPORT, BLOCK, DELETE AKUN
+  */
+
+  // Report
+  Future<void> reportUserInFirebase(String postId, userId) async {
+    final currentUserId = _auth.currentUser!.uid;
+    final report = {
+      'reportedBy': currentUserId,
+      'messageId': postId,
+      'messageOwnerId': userId,
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+
+    await _db.collection("Reports").add(report);
+  }
+
+  // Block
+  Future<void> blockUserInFirebase(String userId) async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    await _db
+        .collection("Users")
+        .doc(currentUserId)
+        .collection("BlockedUsers")
+        .doc(userId)
+        .set({});
+  }
+
+  // Unblock
+  Future<void> unblockUserInFirebase(String blockedUserId) async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    await _db
+        .collection("Users")
+        .doc(currentUserId)
+        .collection("BlockedUsers")
+        .doc(blockedUserId)
+        .delete();
+  }
+
+  // Get list blocked uid
+  Future<List<String>> getBlockedUidFromFirebase() async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    final snapshot = await _db
+        .collection("Users")
+        .doc(currentUserId)
+        .collection("BlockedUsers")
+        .get();
+
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
+
+  /* 
+  FOLLOW
+  */
+
+  // Follow user
+  Future<void> followUserInFirebase(String uid) async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    // add target user ke current user following
+    await _db
+        .collection("Users")
+        .doc(currentUserId)
+        .collection("Following")
+        .doc(uid)
+        .set({});
+
+    // add target user ke current user followers
+    await _db
+        .collection("Users")
+        .doc(uid)
+        .collection("Followers")
+        .doc(currentUserId)
+        .set({});
+  }
+
+  // Unfollow user
+  Future<void> unfollowUserInFirebase(String uid) async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    // remove target user dari current user following
+    await _db
+        .collection("Users")
+        .doc(currentUserId)
+        .collection("Following")
+        .doc(uid)
+        .delete();
+
+    // remove target user dari current user followers
+    await _db
+        .collection("Users")
+        .doc(uid)
+        .collection("Followers")
+        .doc(currentUserId)
+        .delete();
+  }
+
+  // Get list uid follower
+  Future<List<String>> getFollowerUidsFromFirebase(String uid) async {
+    final snapshot =
+        await _db.collection("Users").doc(uid).collection("Followers").get();
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
+
+  // Get list uid following
+  Future<List<String>> getFollowingUidsFromFirebase(String uid) async {
+    final snapshot =
+        await _db.collection("Users").doc(uid).collection("Following").get();
+    return snapshot.docs.map((doc) => doc.id).toList();
+  }
+
+  // Search
+  Future<List<UserProfile>> searchUserInFirebase(String searchTerm) async {
+    try {
+      QuerySnapshot snapshot = await _db
+          .collection("Users")
+          .where('username', isGreaterThan: searchTerm)
+          .where('username', isLessThan: '$searchTerm\uf8ff')
+          .get();
+
+      return snapshot.docs.map((doc) => UserProfile.fromDocument(doc)).toList();
+    } catch (e) {
       return [];
     }
   }

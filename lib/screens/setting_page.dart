@@ -1,3 +1,5 @@
+import 'package:bincang/helper/navigate_pages.dart';
+import 'package:bincang/widget/my_setting_tile.dart';
 import 'package:flutter/material.dart';
 
 class SettingPage extends StatefulWidget {
@@ -16,7 +18,24 @@ class _SettingPageState extends State<SettingPage> {
           "Pengaturan",
         ),
       ),
-      
+      body: Column(
+        children: [
+          MySettingTile(
+            title: "Blocked Users",
+            action: IconButton(
+              onPressed: () => goAccountSettingPage(context),
+              icon: Icon(Icons.arrow_forward_ios),
+            ),
+          ),
+          MySettingTile(
+            title: "Pengaturan akun",
+            action: IconButton(
+              onPressed: () => goAccountSettingPage(context),
+              icon: Icon(Icons.arrow_forward_ios),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

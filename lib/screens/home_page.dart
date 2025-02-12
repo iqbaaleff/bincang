@@ -55,24 +55,45 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      drawer: MyDrawer(),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text("Bincang"),
-        centerTitle: true,
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amber,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12), bottomRight: Radius.circular(12)),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade200,
+        drawer: MyDrawer(),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: const Text("Bincang"),
+          centerTitle: true,
+          bottom: TabBar(
+              dividerColor: Colors.transparent,
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.black54,
+              indicatorColor: Colors.grey,
+              tabs: [
+                Tab(
+                  text: "Untuk anda",
+                ),
+                Tab(
+                  text: "Mengikuti",
+                ),
+              ]),
         ),
-        onPressed: _openPostMessage,
-        child: Icon(Icons.add),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.amber,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), bottomRight: Radius.circular(12)),
+          ),
+          onPressed: _openPostMessage,
+          child: Icon(Icons.add),
+        ),
+        body: TabBarView(
+          children: [
+            _buildPostList(listeningProvider.allPost),
+            _buildPostList(listeningProvider.followingPosts),
+          ],
+        ),
       ),
-      body: _buildPostList(listeningProvider.allPost),
     );
   }
 

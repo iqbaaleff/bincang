@@ -1,3 +1,4 @@
+import 'package:bincang/services/database/database_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthServices {
@@ -37,5 +38,16 @@ class AuthServices {
   //Logout
   Future<void> logout() async {
     await _auth.signOut();
+  }
+
+  //Delete account
+  Future<void> deleteAccount() async {
+    User? user = getCurrentUser();
+    if (user != null) {
+      // delete from firebase
+      await DatabaseServices().deleteUserInfoFromFirebase(user.uid);
+      // delete user auth record
+      await user.delete();
+    }
   }
 }

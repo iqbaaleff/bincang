@@ -1,10 +1,13 @@
 import 'package:bincang/helper/navigate_pages.dart';
 import 'package:bincang/models/user.dart';
+import 'package:bincang/screens/follow_list_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:bincang/widget/my_bio_box.dart';
+import 'package:bincang/widget/my_follow_button.dart';
 import 'package:bincang/widget/my_input_alert_box.dart';
 import 'package:bincang/widget/my_posts_tile.dart';
+import 'package:bincang/widget/my_profile_stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final bioController = TextEditingController();
 
   bool isLoading = true;
+  bool _isFollowing = false;
 
   @override
   void initState() {
@@ -40,6 +44,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> loadUser() async {
     user = await databaseProvider.userProfile(widget.uid);
+
+    await databaseProvider.loadUserFollower(widget.uid);
+    await databaseProvider.loadUserFollowing(widget.uid);
+
+    _isFollowing = databaseProvider.isFollowing(widget.uid);
 
     setState(() {
       isLoading = false;
@@ -66,6 +75,37 @@ class _ProfilePageState extends State<ProfilePage> {
     await loadUser();
   }
 
+  Future<void> toggleFollow() async {
+    // unfoll
+    if (_isFollowing) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Berhenti mengikuti"),
+          content: Text("Apakah kamu yakin?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Batal"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await databaseProvider.unfollowUser(widget.uid);
+              },
+              child: Text("Yakin"),
+            ),
+          ],
+        ),
+      );
+    } else {
+      await databaseProvider.followUser(widget.uid);
+    }
+    setState(() {
+      _isFollowing = !_isFollowing;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -73,12 +113,21 @@ class _ProfilePageState extends State<ProfilePage> {
     // Get user posts
     final allUserPost = listeningProvider.filterUserPosts(widget.uid);
 
+    final followerCount = listeningProvider.getFollowerCount(widget.uid);
+    final followingCount = listeningProvider.getFollowingCount(widget.uid);
+
+    _isFollowing = listeningProvider.isFollowing(widget.uid);
+
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(isLoading ? '' : user!.name),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => goHomePage(context),
+        ),
       ),
       body: ListView(
         children: [
@@ -104,8 +153,22 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           // Profile Stats
+          MyProfileStats(
+            postCount: allUserPost.length,
+            followerCount: followerCount,
+            followingCount: followingCount,
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FollowListPage(
+                    uid: widget.uid,
+                  ),
+                )),
+          ),
 
           // Follow/Unfollow Button
+          if (user != null && user!.uid != currentUserId)
+            MyFollowButton(onPressed: toggleFollow, isFollowing: _isFollowing),
 
           // Edit bio
           Padding(
@@ -120,12 +183,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: Colors.black54,
                   ),
                 ),
-                GestureDetector(
-                    onTap: _showEditBioBox,
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.black54,
-                    )),
+                if (user != null && user!.uid == currentUserId)
+                  GestureDetector(
+                      onTap: _showEditBioBox,
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.black54,
+                      )),
               ],
             ),
           ),

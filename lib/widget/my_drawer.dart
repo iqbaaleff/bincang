@@ -1,4 +1,5 @@
 import 'package:bincang/screens/profile_page.dart';
+import 'package:bincang/screens/search_page.dart';
 import 'package:bincang/widget/my_drawer_tile.dart';
 import 'package:bincang/screens/setting_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
@@ -56,7 +57,19 @@ class MyDrawer extends StatelessWidget {
                   },
                 ),
                 //search
-                const MyDrawerTile(title: "Pencarian", icon: Icons.search),
+                MyDrawerTile(
+                  title: "Pencarian",
+                  icon: Icons.search,
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchPage(),
+                      ),
+                    );
+                  },
+                ),
                 //setting
                 MyDrawerTile(
                   title: "Pengaturan",
