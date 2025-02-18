@@ -328,15 +328,21 @@ class DatabaseServices {
         .doc(currentUserId)
         .collection("Following")
         .doc(uid)
-        .set({});
+        .set({
+      "followedAt":
+          FieldValue.serverTimestamp(), // Tambahkan data agar koleksi muncul
+      "userId": uid // Bisa juga simpan user ID
+    });
 
-    // add target user ke current user followers
     await _db
         .collection("Users")
         .doc(uid)
         .collection("Followers")
         .doc(currentUserId)
-        .set({});
+        .set({
+      "followedAt": FieldValue.serverTimestamp(),
+      "userId": currentUserId
+    });
   }
 
   // Unfollow user

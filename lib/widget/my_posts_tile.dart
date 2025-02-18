@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/helper/time_formatter.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/services/auth/auth_services.dart';
@@ -190,134 +191,139 @@ class _MyPostsTileState extends State<MyPostsTile> {
     int likeCount = listeningProvider.getLikeCount(widget.post.id);
     int commentCount = listeningProvider.getComments(widget.post.id).length;
     final size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: widget.onPostTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: size.width * 0.05, vertical: size.height * 0.004),
-        padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.02, vertical: size.height * 0.02),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
-          color: Colors.white38,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //Bagian atas
-            GestureDetector(
-              onTap: widget.onUserTap,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.person,
-                    color: Colors.black54,
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                    child: Text(
-                      widget.post.name,
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "@${widget.post.username}",
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: showOption,
-                    child: Icon(Icons.more_horiz),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(
-              height: size.height * 0.004,
-            ),
-
-            // Konten
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
-              child: Text(widget.post.message),
-            ),
-
-            // Button like comment
-            Row(
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: widget.onPostTap,
+          child: Container(
+            color: Colors.transparent,
+            margin: EdgeInsets.symmetric(
+                horizontal: size.width * 0.03, vertical: size.height * 0.002),
+            padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.01, vertical: size.height * 0.01),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // LIKES
+                //Bagian atas
+                GestureDetector(
+                  onTap: widget.onUserTap,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.person,
+                        color: AppColors.secondary,
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                        child: Text(
+                          widget.post.name,
+                          style: TextStyle(
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: showOption,
+                        child: Icon(Icons.more_horiz, color: AppColors.third),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(
+                  height: size.height * 0.004,
+                ),
+
+                // Konten
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+                  child: Text(
+                    widget.post.message,
+                    style: TextStyle(
+                      color: AppColors.text,
+                    ),
+                  ),
+                ),
+
+                // Button like comment
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: _toggleLikePost,
-                      child: likedByCurrentUser
-                          ? Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            )
-                          : Icon(
-                              Icons.favorite_border,
-                              color: Colors.black54,
+                    // LIKES
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _toggleLikePost,
+                          child: likedByCurrentUser
+                              ? Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                )
+                              : Icon(
+                                  Icons.favorite_border,
+                                  color: AppColors.text,
+                                ),
+                        ),
+
+                        // Like count
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: size.width * 0.01),
+                          child: Text(
+                            likeCount != 0 ? likeCount.toString() : '',
+                            style: TextStyle(
+                              color: likedByCurrentUser
+                                  ? Colors.red
+                                  : AppColors.text,
                             ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: size.width * 0.03,
+                    ),
+                    // COMMENT
+                    GestureDetector(
+                      onTap: _openNewCommentBox,
+                      child: Icon(
+                        Icons.comment_outlined,
+                        color: AppColors.text,
+                      ),
                     ),
 
-                    // Like count
+                    // Comment count
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: size.width * 0.01),
                       child: Text(
-                        likeCount != 0 ? likeCount.toString() : '',
+                        commentCount != 0 ? commentCount.toString() : '',
                         style: TextStyle(
-                          color: Colors.black54,
+                          color: AppColors.text,
                         ),
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    Text(
+                      formatTimestamp(widget.post.timestamp),
+                      style: TextStyle(
+                        color: Colors.black54,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  width: size.width * 0.03,
-                ),
-                // COMMENT
-                GestureDetector(
-                  onTap: _openNewCommentBox,
-                  child: Icon(
-                    Icons.comment,
-                    color: Colors.black54,
-                  ),
-                ),
-
-                // Comment count
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                  child: Text(
-                    commentCount != 0 ? commentCount.toString() : '',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-
-                const Spacer(),
-
-                Text(
-                  formatTimestamp(widget.post.timestamp),
-                  style: TextStyle(
-                    color: Colors.black54,
-                  ),
-                ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+        Divider(
+          color: Colors.white10,
+        )
+      ],
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +40,13 @@ class _AccountSettingPageState extends State<AccountSettingPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text("Pengaturan akun"),
+        backgroundColor: AppColors.primary,
+        title: Text(
+          "Pengaturan akun",
+          style: TextStyle(color: AppColors.third),
+        ),
       ),
       body: Column(
         children: [

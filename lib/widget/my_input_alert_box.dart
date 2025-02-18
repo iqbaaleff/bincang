@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -15,37 +16,26 @@ class MyInputAlertBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return AlertDialog(
+      backgroundColor: AppColors.third,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       content: Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: EdgeInsets.only(top: size.height * 0.01),
         child: TextField(
           controller: textController,
           maxLength: 140,
           maxLines: 3,
           decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-              ),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-              ),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
-            ),
+            border: InputBorder.none,
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.black54),
-            counterStyle: TextStyle(color: Colors.black54),
+            hintStyle: TextStyle(color: AppColors.text),
+            counterStyle: TextStyle(color: AppColors.text),
+          ),
+          style: TextStyle(
+            color: AppColors.text,
           ),
         ),
       ),
@@ -55,11 +45,9 @@ class MyInputAlertBox extends StatelessWidget {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.amber,
+                backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12)),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
               ),
               onPressed: () {
@@ -69,20 +57,18 @@ class MyInputAlertBox extends StatelessWidget {
               child: Text(
                 "Batal",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppColors.text,
                 ),
               ),
             ),
             SizedBox(
-              width: 8,
+              width: size.width * 0.03,
             ),
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.amber,
+                backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12)),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
               ),
               onPressed: () {
@@ -92,7 +78,7 @@ class MyInputAlertBox extends StatelessWidget {
               },
               child: Text(
                 onPressedText,
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: AppColors.text),
               ),
             ),
           ],

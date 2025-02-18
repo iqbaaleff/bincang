@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -12,13 +13,15 @@ class MyBioBox extends StatelessWidget {
       margin: EdgeInsets.symmetric(
           horizontal: size.width * 0.05, vertical: size.height * 0.004),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
-        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        color: AppColors.third,
       ),
       padding: EdgeInsets.all(25),
       child: Text(
         text.isNotEmpty ? text : "Tidak ada bio",
+        style: TextStyle(
+          color: AppColors.text,
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/services/database/database_services.dart';
 import 'package:bincang/widget/my_circle.dart';
 import 'package:bincang/screens/login_page.dart';
@@ -75,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primary,
       body: Stack(
         children: [
           Positioned(
@@ -100,11 +101,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: size.height * 0.03),
-                            child: const Text(
+                            child: Text(
                               "Register",
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
+                                color: AppColors.third,
                               ),
                             ),
                           ),
@@ -247,8 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               width: size.width * 0.5,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors
-                                      .amber, // Warna latar belakang tombol
+                                  backgroundColor: AppColors.third,
                                   foregroundColor:
                                       Colors.black, // Warna teks tombol
                                   shape: const RoundedRectangleBorder(
@@ -259,8 +260,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ),
                                 onPressed: register,
-                                child: const Text(
+                                child: Text(
                                   "Daftar",
+                                  style: TextStyle(
+                                    color: AppColors.secondary,
+                                  ),
                                 ),
                               ),
                             ),
@@ -278,9 +282,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           const Text("Sudah Punya Akun?"),
                           GestureDetector(
                             onTap: widget.onTap,
-                            child: const Text("Login sekarang!",
+                            child: Text("Login sekarang!",
                                 style: TextStyle(
-                                  color: Colors.amber,
+                                  color: AppColors.third,
                                 )),
                           )
                         ],

@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/helper/navigate_pages.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/services/database/database_provider.dart';
@@ -23,9 +24,12 @@ class _PostPageState extends State<PostPage> {
     final allComments = listeningProvider.getComments(widget.post.id);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        title: Text(widget.post.message),
+        title: Text(
+          widget.post.message,
+          style: TextStyle(color: AppColors.secondary),
+        ),
         backgroundColor: Colors.transparent,
       ),
       body: ListView(
@@ -39,7 +43,10 @@ class _PostPageState extends State<PostPage> {
           // Comment di postingan ini
           allComments.isEmpty
               ? Center(
-                  child: Text("Tidak ada komentar.."),
+                  child: Text(
+                    "Tidak ada komentar..",
+                    style: TextStyle(color: AppColors.secondary),
+                  ),
                 )
               : ListView.builder(
                   itemCount: allComments.length,

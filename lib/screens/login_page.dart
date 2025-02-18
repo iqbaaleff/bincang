@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/widget/my_circle.dart';
 import 'package:bincang/screens/register_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
@@ -39,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primary,
       body: Stack(
         children: [
           Positioned(
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               height: size.height * 0.65,
               width: size.width,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(100)),
                 color: Colors.white,
               ),
@@ -64,11 +65,12 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: size.height * 0.03),
-                            child: const Text(
+                            child: Text(
                               "Login",
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
+                                color: AppColors.third,
                               ),
                             ),
                           ),
@@ -145,8 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: size.width * 0.5,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors
-                                      .amber, // Warna latar belakang tombol
+                                  backgroundColor: AppColors.third,
                                   foregroundColor:
                                       Colors.black, // Warna teks tombol
                                   shape: const RoundedRectangleBorder(
@@ -157,8 +158,11 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                                 onPressed: login,
-                                child: const Text(
+                                child: Text(
                                   "Masuk",
+                                  style: TextStyle(
+                                    color: AppColors.secondary,
+                                  ),
                                 ),
                               ),
                             ),
@@ -195,9 +199,9 @@ class _LoginPageState extends State<LoginPage> {
                           const Text("Belum Punya Akun?"),
                           GestureDetector(
                             onTap: widget.onTap,
-                            child: const Text("Daftar disini!",
+                            child: Text("Daftar disini!",
                                 style: TextStyle(
-                                  color: Colors.amber,
+                                  color: AppColors.third,
                                 )),
                           )
                         ],

@@ -216,78 +216,87 @@ class DatabaseProvider extends ChangeNotifier {
   // follow user
   Future<void> followUser(String targetUserId) async {
     final currentUserId = _auth.getCurrentUid();
-    // inisialisasi dengan list kosong jika null
+
+    // Inisialisasi dengan list kosong jika null
     _followers.putIfAbsent(targetUserId, () => []);
     _following.putIfAbsent(currentUserId, () => []);
 
-    // follow jika current user bukan follower target user
+    // Follow jika current user bukan follower target user
     if (!_followers[targetUserId]!.contains(currentUserId)) {
-      // add current user ke target user follower list
+      // Tambah current user ke target user follower list
       _followers[targetUserId]?.add(currentUserId);
       _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 0) + 1;
 
-      // add target user ke current user following
+      // Tambah target user ke current user following
       _following[currentUserId]?.add(targetUserId);
-
       _followingCount[currentUserId] =
           (_followingCount[currentUserId] ?? 0) + 1;
 
+      // Notifikasi perubahan data
       notifyListeners();
 
-      /* 
-      percobaan kirim ke firebase
-      */
-
       try {
+        // Kirim ke Firebase
         await _db.followUserInFirebase(targetUserId);
         await loadUserFollower(currentUserId);
         await loadUserFollowing(currentUserId);
       } catch (e) {
+        // Rollback data jika gagal
         _followers[targetUserId]?.remove(currentUserId);
-        _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 0) - 1;
+        _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 1) - 1;
+
         _following[currentUserId]?.remove(targetUserId);
         _followingCount[currentUserId] =
-            (_followingCount[currentUserId] ?? 0) - 1;
+            (_followingCount[currentUserId] ?? 1) - 1;
+
+        // Notifikasi perubahan data
         notifyListeners();
+
+        print("Error saat mengikuti: $e");
       }
     }
   }
 
-  // unfollow user
+// unfollow user
   Future<void> unfollowUser(String targetUserId) async {
     final currentUserId = _auth.getCurrentUid();
-    // inisialisasi dengan list kosong jika null
+
+    // Inisialisasi dengan list kosong jika null
     _followers.putIfAbsent(targetUserId, () => []);
     _following.putIfAbsent(currentUserId, () => []);
 
-    // unfollow jika current user follower target user
-    if (!_followers[targetUserId]!.contains(currentUserId)) {
-      // remove current user dari target user follower list
+    // Unfollow jika current user adalah follower target user
+    if (_followers[targetUserId]!.contains(currentUserId)) {
+      // Hapus current user dari target user follower list
       _followers[targetUserId]?.remove(currentUserId);
       _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 1) - 1;
 
-      // remove target user ke current user following
+      // Hapus target user dari current user following list
       _following[currentUserId]?.remove(targetUserId);
-
       _followingCount[currentUserId] =
           (_followingCount[currentUserId] ?? 1) - 1;
 
+      // Notifikasi perubahan data
       notifyListeners();
 
-      /* 
-      percobaan ke firebase
-      */
       try {
+        // Kirim ke Firebase
         await _db.unfollowUserInFirebase(targetUserId);
         await loadUserFollower(currentUserId);
         await loadUserFollowing(currentUserId);
       } catch (e) {
+        // Rollback data jika gagal
         _followers[targetUserId]?.add(currentUserId);
         _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 0) + 1;
+
         _following[currentUserId]?.add(targetUserId);
         _followingCount[currentUserId] =
             (_followingCount[currentUserId] ?? 0) + 1;
+
+        // Notifikasi perubahan data
         notifyListeners();
+
+        print("Error saat unfollow: $e");
       }
     }
   }

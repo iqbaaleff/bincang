@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/helper/navigate_pages.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/screens/follow_list_page.dart';
@@ -119,13 +120,21 @@ class _ProfilePageState extends State<ProfilePage> {
     _isFollowing = listeningProvider.isFollowing(widget.uid);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(isLoading ? '' : user!.name),
+        backgroundColor: AppColors.primary,
+        title: Text(
+          isLoading ? '' : user!.name,
+          style: TextStyle(
+            color: AppColors.third,
+          ),
+        ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.third,
+          ),
           onPressed: () => goHomePage(context),
         ),
       ),
@@ -133,7 +142,10 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           // Username
           Center(
-            child: Text(isLoading ? '' : '@${user!.username}'),
+            child: Text(isLoading ? '' : '@${user!.username}',
+                style: TextStyle(
+                  color: AppColors.secondary,
+                )),
           ),
           // Profile Picture
           Padding(
@@ -141,12 +153,13 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Center(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.amber,
+                  color: AppColors.third,
                   borderRadius: BorderRadius.circular(size.height * 1),
                 ),
                 padding: EdgeInsets.all(size.width * 0.08),
                 child: Icon(
                   Icons.person,
+                  color: AppColors.secondary,
                   size: size.width * 0.2,
                 ),
               ),
@@ -180,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Bio",
                   style: TextStyle(
-                    color: Colors.black54,
+                    color: AppColors.secondary,
                   ),
                 ),
                 if (user != null && user!.uid == currentUserId)
@@ -188,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: _showEditBioBox,
                       child: Icon(
                         Icons.edit,
-                        color: Colors.black54,
+                        color: AppColors.secondary,
                       )),
               ],
             ),
@@ -204,15 +217,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 bottom: size.height * 0.005),
             child: Text(
               "Postingan",
-              style: TextStyle(color: Colors.black54),
+              style: TextStyle(color: AppColors.secondary),
             ),
           ),
           // List postingan user
           allUserPost.isEmpty
               ?
               // Postingan user kosong
-              const Center(
-                  child: Text("Belum ada postingan"),
+              Center(
+                  child: Text(
+                    "Belum ada postingan",
+                    style: TextStyle(color: AppColors.secondary),
+                  ),
                 )
               :
               // Postingan user ada

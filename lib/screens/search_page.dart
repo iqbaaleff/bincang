@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:bincang/widget/my_user_tile.dart';
 import 'package:flutter/foundation.dart';
@@ -19,13 +20,24 @@ class _SearchPageState extends State<SearchPage> {
     late final databaseProvider =
         Provider.of<DatabaseProvider>(context, listen: false);
     return Scaffold(
-        backgroundColor: Colors.grey.shade200,
+        backgroundColor: AppColors.primary,
         appBar: AppBar(
+          backgroundColor: AppColors.primary,
           title: TextField(
             controller: _searchController,
             decoration: InputDecoration(
               hintText: "Cari disini..",
+              hintStyle: TextStyle(
+                color: AppColors.secondary,
+              ),
               border: InputBorder.none,
+              suffixIcon: Icon(
+                Icons.search,
+                color: AppColors.secondary,
+              ),
+            ),
+            style: TextStyle(
+              color: AppColors.secondary,
             ),
             onChanged: (value) {
               if (value.isNotEmpty) {
@@ -38,7 +50,10 @@ class _SearchPageState extends State<SearchPage> {
         ),
         body: listeningProvider.searchResult.isEmpty
             ? Center(
-                child: Text("Pengguna tidak ditemukan.."),
+                child: Text(
+                  "Pengguna tidak ditemukan..",
+                  style: TextStyle(color: AppColors.secondary),
+                ),
               )
             : ListView.builder(
                 itemCount: listeningProvider.searchResult.length,

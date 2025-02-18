@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/screens/profile_page.dart';
 import 'package:flutter/foundation.dart';
@@ -10,28 +11,34 @@ class MyUserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.004),
-      padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.02, vertical: size.height * 0.02),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
-        color: Colors.white,
-      ),
-      child: ListTile(
-        title: Text(user.name),
-        leading: Icon(Icons.person),
-        subtitle: Text('@${user.username}'),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfilePage(uid: user.uid),
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(
+              horizontal: size.width * 0.01, vertical: size.height * 0.002),
+          child: ListTile(
+            title: Text(
+              user.name,
+              style: TextStyle(color: AppColors.secondary),
+            ),
+            leading: Icon(Icons.person, color: AppColors.secondary),
+            subtitle: Text(
+              '@${user.username}',
+              style: TextStyle(color: AppColors.text),
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(uid: user.uid),
+              ),
+            ),
+            trailing: Icon(Icons.arrow_forward_ios, color: AppColors.third),
           ),
         ),
-        trailing: Icon(Icons.arrow_forward_ios),
-      ),
+        Divider(
+          color: Colors.white10,
+        )
+      ],
     );
   }
 }
