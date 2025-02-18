@@ -66,11 +66,6 @@ class MyCommentTile extends StatelessWidget {
           horizontal: size.width * 0.05, vertical: size.height * 0.004),
       padding: EdgeInsets.symmetric(
           horizontal: size.width * 0.02, vertical: size.height * 0.02),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
-        color: Colors.white,
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

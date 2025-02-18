@@ -16,7 +16,7 @@ class MyProfileStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textStyleForCount = TextStyle(fontSize: 20, color: AppColors.secondary);
+    var textStyleForCount = TextStyle(fontSize: 20, color: Colors.black);
     var textStyleForText = TextStyle(color: AppColors.text);
     return GestureDetector(
       onTap: onTap,

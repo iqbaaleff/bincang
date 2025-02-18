@@ -15,7 +15,7 @@ class MySettingTile extends StatelessWidget {
       onTap: onTap,
       title: Text(
         title,
-        style: TextStyle(color: AppColors.secondary),
+        style: TextStyle(color: AppColors.text),
       ),
       trailing: action,
       iconColor: AppColors.third,

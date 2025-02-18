@@ -19,9 +19,9 @@ class MyUserTile extends StatelessWidget {
           child: ListTile(
             title: Text(
               user.name,
-              style: TextStyle(color: AppColors.secondary),
+              style: TextStyle(color: Colors.black),
             ),
-            leading: Icon(Icons.person, color: AppColors.secondary),
+            leading: Icon(Icons.person, color: Colors.black),
             subtitle: Text(
               '@${user.username}',
               style: TextStyle(color: AppColors.text),

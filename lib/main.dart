@@ -1,4 +1,5 @@
 import 'package:bincang/firebase_options.dart';
+import 'package:bincang/helper/time_formatter.dart';
 import 'package:bincang/screens/home_page.dart';
 import 'package:bincang/screens/login_page.dart';
 import 'package:bincang/services/auth/auth_gate.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  registerCustomLocale();
   WidgetsFlutterBinding();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(ChangeNotifierProvider(

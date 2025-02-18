@@ -19,7 +19,6 @@ class _FollowListPageState extends State<FollowListPage> {
       Provider.of<DatabaseProvider>(context, listen: false);
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadFollowerList();
     loadFollowingList();

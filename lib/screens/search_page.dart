@@ -20,24 +20,24 @@ class _SearchPageState extends State<SearchPage> {
     late final databaseProvider =
         Provider.of<DatabaseProvider>(context, listen: false);
     return Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: AppColors.primary,
+          backgroundColor: Colors.white,
           title: TextField(
             controller: _searchController,
             decoration: InputDecoration(
               hintText: "Cari disini..",
               hintStyle: TextStyle(
-                color: AppColors.secondary,
+                color: AppColors.text,
               ),
               border: InputBorder.none,
               suffixIcon: Icon(
                 Icons.search,
-                color: AppColors.secondary,
+                color: AppColors.text,
               ),
             ),
             style: TextStyle(
-              color: AppColors.secondary,
+              color: AppColors.text,
             ),
             onChanged: (value) {
               if (value.isNotEmpty) {
@@ -52,7 +52,7 @@ class _SearchPageState extends State<SearchPage> {
             ? Center(
                 child: Text(
                   "Pengguna tidak ditemukan..",
-                  style: TextStyle(color: AppColors.secondary),
+                  style: TextStyle(color: AppColors.text),
                 ),
               )
             : ListView.builder(

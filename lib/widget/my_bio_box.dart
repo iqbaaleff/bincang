@@ -20,7 +20,7 @@ class MyBioBox extends StatelessWidget {
       child: Text(
         text.isNotEmpty ? text : "Tidak ada bio",
         style: TextStyle(
-          color: AppColors.text,
+          color: AppColors.secondary,
         ),
       ),
     );

@@ -61,9 +61,9 @@ class _BlockedUserPageState extends State<BlockedUsersPage> {
   Widget build(BuildContext context) {
     final blockedUsers = listeningProvider.blockedUsers;
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.white,
         title: Text(
           "Pengguna yang diblokir",
           style: TextStyle(color: AppColors.third),
@@ -73,7 +73,7 @@ class _BlockedUserPageState extends State<BlockedUsersPage> {
           ? Center(
               child: Text(
               "Tidak ada yang di blokir..",
-              style: TextStyle(color: AppColors.secondary),
+              style: TextStyle(color: Colors.black),
             ))
           : ListView.builder(
               itemCount: blockedUsers.length,

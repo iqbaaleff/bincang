@@ -24,11 +24,11 @@ class _PostPageState extends State<PostPage> {
     final allComments = listeningProvider.getComments(widget.post.id);
 
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           widget.post.message,
-          style: TextStyle(color: AppColors.secondary),
+          style: TextStyle(color: AppColors.third),
         ),
         backgroundColor: Colors.transparent,
       ),
@@ -45,7 +45,7 @@ class _PostPageState extends State<PostPage> {
               ? Center(
                   child: Text(
                     "Tidak ada komentar..",
-                    style: TextStyle(color: AppColors.secondary),
+                    style: TextStyle(color: Colors.black),
                   ),
                 )
               : ListView.builder(

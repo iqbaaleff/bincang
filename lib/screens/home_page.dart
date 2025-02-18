@@ -58,7 +58,7 @@ class _HomepageState extends State<Homepage> {
         DefaultTabController(
           length: 2,
           child: Scaffold(
-            backgroundColor: AppColors.primary,
+            backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: AppColors.primary,
               surfaceTintColor: AppColors.third,
@@ -113,35 +113,39 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.text,
+      backgroundColor: Colors.white,
       body: _pages(context)[_selectedIndex],
       bottomNavigationBar: BottomAppBar(
         color: AppColors.primary,
         shape: CircularNotchedRectangle(),
-        notchMargin: 8.0,
+        notchMargin: 15.0,
         surfaceTintColor: AppColors.third,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
               icon: Icon(Icons.home),
-              color: _selectedIndex == 0 ? AppColors.third : AppColors.text,
+              color:
+                  _selectedIndex == 0 ? AppColors.third : AppColors.secondary,
               onPressed: () => _onItemTapped(0),
             ),
             IconButton(
               icon: Icon(Icons.search),
-              color: _selectedIndex == 1 ? AppColors.third : AppColors.text,
+              color:
+                  _selectedIndex == 1 ? AppColors.third : AppColors.secondary,
               onPressed: () => _onItemTapped(1),
             ),
             SizedBox(width: 40), // Untuk memberi ruang bagi FAB
             IconButton(
               icon: Icon(Icons.person),
-              color: _selectedIndex == 2 ? AppColors.third : AppColors.text,
+              color:
+                  _selectedIndex == 2 ? AppColors.third : AppColors.secondary,
               onPressed: () => _onItemTapped(2),
             ),
             IconButton(
               icon: Icon(Icons.settings),
-              color: _selectedIndex == 3 ? AppColors.third : AppColors.text,
+              color:
+                  _selectedIndex == 3 ? AppColors.third : AppColors.secondary,
               onPressed: () => _onItemTapped(3),
             ),
           ],
@@ -163,7 +167,7 @@ class _HomepageState extends State<Homepage> {
             child: Text(
               "Tidak ada apapun...",
               style: TextStyle(
-                color: AppColors.secondary,
+                color: Colors.black87,
               ),
             ),
           )

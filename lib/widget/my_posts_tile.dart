@@ -211,7 +211,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                     children: [
                       Icon(
                         Icons.person,
-                        color: AppColors.secondary,
+                        color: AppColors.text,
                       ),
                       Padding(
                         padding:
@@ -219,9 +219,15 @@ class _MyPostsTileState extends State<MyPostsTile> {
                         child: Text(
                           widget.post.name,
                           style: TextStyle(
-                            color: AppColors.secondary,
+                            color: Colors.black54,
                             fontWeight: FontWeight.w400,
                           ),
+                        ),
+                      ),
+                      Text(
+                        formatTimestamp(widget.post.timestamp),
+                        style: TextStyle(
+                          color: AppColors.third,
                         ),
                       ),
                       const Spacer(),
@@ -307,13 +313,6 @@ class _MyPostsTileState extends State<MyPostsTile> {
                     ),
 
                     const Spacer(),
-
-                    Text(
-                      formatTimestamp(widget.post.timestamp),
-                      style: TextStyle(
-                        color: Colors.black54,
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -321,7 +320,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
           ),
         ),
         Divider(
-          color: Colors.white10,
+          color: Colors.black12,
         )
       ],
     );

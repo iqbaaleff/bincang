@@ -259,6 +259,7 @@ class DatabaseServices {
       return [];
     }
   }
+  
 
   /* 
   REPORT, BLOCK, DELETE AKUN

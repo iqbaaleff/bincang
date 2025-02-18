@@ -8,6 +8,7 @@ class Comment {
   final String username;
   final String message;
   final Timestamp timestamp;
+  final String? replyTo; // Tambahan untuk reply comment
 
   Comment({
     required this.id,
@@ -17,21 +18,23 @@ class Comment {
     required this.username,
     required this.message,
     required this.timestamp,
+    this.replyTo, // Bisa null jika bukan balasan
   });
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Comment(
       id: doc.id,
-      postId: doc['postId'],
-      uid: doc['uid'],
-      name: doc['name'],
-      username: doc['username'],
-      message: doc['message'],
-      timestamp: doc['timestamp'],
+      postId: data['postId'],
+      uid: data['uid'],
+      name: data['name'],
+      username: data['username'],
+      message: data['message'],
+      timestamp: data['timestamp'],
+      replyTo: data['replyTo'], // Tambahkan ini
     );
   }
 
-  // App -> firebase
   Map<String, dynamic> toMap() {
     return {
       'postId': postId,
@@ -40,6 +43,7 @@ class Comment {
       'username': username,
       'message': message,
       'timestamp': timestamp,
+      'replyTo': replyTo, // Tambahkan ini
     };
   }
 }

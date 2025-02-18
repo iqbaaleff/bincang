@@ -120,9 +120,9 @@ class _ProfilePageState extends State<ProfilePage> {
     _isFollowing = listeningProvider.isFollowing(widget.uid);
 
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.white,
         title: Text(
           isLoading ? '' : user!.name,
           style: TextStyle(
@@ -144,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Center(
             child: Text(isLoading ? '' : '@${user!.username}',
                 style: TextStyle(
-                  color: AppColors.secondary,
+                  color: AppColors.text,
                 )),
           ),
           // Profile Picture
@@ -193,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Bio",
                   style: TextStyle(
-                    color: AppColors.secondary,
+                    color: AppColors.text,
                   ),
                 ),
                 if (user != null && user!.uid == currentUserId)
@@ -201,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: _showEditBioBox,
                       child: Icon(
                         Icons.edit,
-                        color: AppColors.secondary,
+                        color: AppColors.text,
                       )),
               ],
             ),
@@ -217,7 +217,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 bottom: size.height * 0.005),
             child: Text(
               "Postingan",
-              style: TextStyle(color: AppColors.secondary),
+              style: TextStyle(color: Colors.black),
             ),
           ),
           // List postingan user
@@ -227,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Center(
                   child: Text(
                     "Belum ada postingan",
-                    style: TextStyle(color: AppColors.secondary),
+                    style: TextStyle(color: Colors.black),
                   ),
                 )
               :
