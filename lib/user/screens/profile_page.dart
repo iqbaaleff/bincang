@@ -1,7 +1,7 @@
 import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/helper/navigate_pages.dart';
 import 'package:bincang/models/user.dart';
-import 'package:bincang/screens/follow_list_page.dart';
+import 'package:bincang/user/screens/follow_list_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:bincang/widget/my_bio_box.dart';
@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // User info
   UserProfile? user;
-  String currentUserId = AuthServices().getCurrentUid();
+  String currentUserId = AuthServices().getCurrentUid()!;
 
   final bioController = TextEditingController();
 

@@ -57,7 +57,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   // Load following posts
   Future<void> loadFollowingPosts() async {
-    String currentUid = _auth.getCurrentUid();
+    String currentUid = _auth.getCurrentUid()!;
     final followingUserIds = await _db.getFollowingUidsFromFirebase(currentUid);
     _followingPosts =
         _allPosts.where((post) => followingUserIds.contains(post.uid)).toList();
@@ -219,17 +219,17 @@ class DatabaseProvider extends ChangeNotifier {
 
     // Inisialisasi dengan list kosong jika null
     _followers.putIfAbsent(targetUserId, () => []);
-    _following.putIfAbsent(currentUserId, () => []);
+    _following.putIfAbsent(currentUserId!, () => []);
 
     // Follow jika current user bukan follower target user
     if (!_followers[targetUserId]!.contains(currentUserId)) {
       // Tambah current user ke target user follower list
-      _followers[targetUserId]?.add(currentUserId);
+      _followers[targetUserId]?.add(currentUserId!);
       _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 0) + 1;
 
       // Tambah target user ke current user following
       _following[currentUserId]?.add(targetUserId);
-      _followingCount[currentUserId] =
+      _followingCount[currentUserId!] =
           (_followingCount[currentUserId] ?? 0) + 1;
 
       // Notifikasi perubahan data
@@ -238,15 +238,15 @@ class DatabaseProvider extends ChangeNotifier {
       try {
         // Kirim ke Firebase
         await _db.followUserInFirebase(targetUserId);
-        await loadUserFollower(currentUserId);
-        await loadUserFollowing(currentUserId);
+        await loadUserFollower(currentUserId!);
+        await loadUserFollowing(currentUserId!);
       } catch (e) {
         // Rollback data jika gagal
         _followers[targetUserId]?.remove(currentUserId);
         _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 1) - 1;
 
         _following[currentUserId]?.remove(targetUserId);
-        _followingCount[currentUserId] =
+        _followingCount[currentUserId!] =
             (_followingCount[currentUserId] ?? 1) - 1;
 
         // Notifikasi perubahan data
@@ -263,7 +263,7 @@ class DatabaseProvider extends ChangeNotifier {
 
     // Inisialisasi dengan list kosong jika null
     _followers.putIfAbsent(targetUserId, () => []);
-    _following.putIfAbsent(currentUserId, () => []);
+    _following.putIfAbsent(currentUserId!, () => []);
 
     // Unfollow jika current user adalah follower target user
     if (_followers[targetUserId]!.contains(currentUserId)) {
@@ -273,7 +273,7 @@ class DatabaseProvider extends ChangeNotifier {
 
       // Hapus target user dari current user following list
       _following[currentUserId]?.remove(targetUserId);
-      _followingCount[currentUserId] =
+      _followingCount[currentUserId!] =
           (_followingCount[currentUserId] ?? 1) - 1;
 
       // Notifikasi perubahan data
@@ -282,15 +282,15 @@ class DatabaseProvider extends ChangeNotifier {
       try {
         // Kirim ke Firebase
         await _db.unfollowUserInFirebase(targetUserId);
-        await loadUserFollower(currentUserId);
-        await loadUserFollowing(currentUserId);
+        await loadUserFollower(currentUserId!);
+        await loadUserFollowing(currentUserId!);
       } catch (e) {
         // Rollback data jika gagal
-        _followers[targetUserId]?.add(currentUserId);
+        _followers[targetUserId]?.add(currentUserId!);
         _followerCount[targetUserId] = (_followerCount[targetUserId] ?? 0) + 1;
 
         _following[currentUserId]?.add(targetUserId);
-        _followingCount[currentUserId] =
+        _followingCount[currentUserId!] =
             (_followingCount[currentUserId] ?? 0) + 1;
 
         // Notifikasi perubahan data

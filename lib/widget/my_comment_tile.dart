@@ -14,7 +14,7 @@ class MyCommentTile extends StatelessWidget {
 
   void showOption(BuildContext context) {
     // Cek user
-    String currentId = AuthServices().getCurrentUid();
+    String currentId = AuthServices().getCurrentUid()!;
     final bool isOwnComment = comment.uid == currentId;
 
     // Pilihan

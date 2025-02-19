@@ -1,7 +1,7 @@
 import 'package:bincang/firebase_options.dart';
 import 'package:bincang/helper/time_formatter.dart';
-import 'package:bincang/screens/home_page.dart';
-import 'package:bincang/screens/login_page.dart';
+import 'package:bincang/user/screens/home_page.dart';
+import 'package:bincang/login_page.dart';
 import 'package:bincang/services/auth/auth_gate.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:firebase_core/firebase_core.dart';

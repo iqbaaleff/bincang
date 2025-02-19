@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:bincang/screens/profile_page.dart';
-import 'package:bincang/screens/search_page.dart';
-import 'package:bincang/screens/setting_page.dart';
+import 'package:bincang/user/screens/profile_page.dart';
+import 'package:bincang/user/screens/search_page.dart';
+import 'package:bincang/user/screens/setting_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/helper/navigate_pages.dart';
@@ -96,7 +96,7 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         SearchPage(),
-        ProfilePage(uid: AuthServices().getCurrentUid()),
+        ProfilePage(uid: AuthServices().getCurrentUid()!),
         SettingPage(),
       ];
 
@@ -153,7 +153,7 @@ class _HomepageState extends State<Homepage> {
       ),
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
-        onPressed: () => goAddPostPage(context, AuthServices().getCurrentUid()),
+        onPressed: () => goAddPostPage(context, AuthServices().getCurrentUid()!),
         backgroundColor: AppColors.third,
         child: Icon(Icons.add, color: AppColors.secondary),
       ),

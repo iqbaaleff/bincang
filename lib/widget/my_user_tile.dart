@@ -1,6 +1,6 @@
 import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/models/user.dart';
-import 'package:bincang/screens/profile_page.dart';
+import 'package:bincang/user/screens/profile_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

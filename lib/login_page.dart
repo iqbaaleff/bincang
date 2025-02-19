@@ -1,6 +1,5 @@
 import 'package:bincang/helper/app_colors.dart';
-import 'package:bincang/widget/my_circle.dart';
-import 'package:bincang/screens/register_page.dart';
+import 'package:bincang/register_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:flutter/material.dart';
 
@@ -14,31 +13,46 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _auth = AuthServices();
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController pwController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  //login method
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    pwController.dispose();
+    super.dispose();
+  }
+
   void login() async {
-    showLoadingCircle(context);
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      await _auth.loginEmailPassword(emailController.text, pwController.text);
-
-      if (mounted) {
-        hideLoadingCircle(context);
-      }
+      await _auth.loginEmailPassword(
+          emailController.text.trim(), pwController.text.trim());
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login gagal: ${e.toString()}")),
+      );
+    } finally {
       if (mounted) {
-        hideLoadingCircle(context);
+        setState(() {
+          _isLoading = false;
+        });
       }
-      print(e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Stack(
@@ -55,12 +69,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: size.width * 0.1, vertical: size.height * 0.01),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //
-                    Container(
-                      child: Column(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(
@@ -79,26 +93,26 @@ class _LoginPageState extends State<LoginPage> {
                                 vertical: size.height * 0.01),
                             child: TextFormField(
                               controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
-                                label: Text("Email"),
+                                labelText: "Email",
                                 prefixIcon: Icon(Icons.email),
-                                enabledBorder: OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
-                                  borderSide: BorderSide(
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(12),
-                                      bottomRight: Radius.circular(12)),
-                                  borderSide: BorderSide(
-                                    width: 2.0,
-                                  ),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Email tidak boleh kosong";
+                                } else if (!RegExp(
+                                        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+                                    .hasMatch(value)) {
+                                  return "Masukkan email yang valid";
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           Padding(
@@ -108,25 +122,22 @@ class _LoginPageState extends State<LoginPage> {
                               controller: pwController,
                               obscureText: true,
                               decoration: const InputDecoration(
-                                label: Text("Password"),
+                                labelText: "Password",
                                 prefixIcon: Icon(Icons.lock),
-                                enabledBorder: OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(12),
                                       bottomRight: Radius.circular(12)),
-                                  borderSide: BorderSide(
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(12),
-                                      bottomRight: Radius.circular(12)),
-                                  borderSide: BorderSide(
-                                    width: 2.0,
-                                  ),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Password tidak boleh kosong";
+                                } else if (value.length < 6) {
+                                  return "Password minimal 6 karakter";
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           const Row(
@@ -134,9 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Text(
                                 "Lupa Password?",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
+                                style: TextStyle(color: Colors.blue),
                               ),
                             ],
                           ),
@@ -148,22 +157,24 @@ class _LoginPageState extends State<LoginPage> {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.third,
-                                  foregroundColor:
-                                      Colors.black, // Warna teks tombol
+                                  foregroundColor: Colors.black,
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(12),
                                       bottomRight: Radius.circular(12),
-                                    ), // Border radius
+                                    ),
                                   ),
                                 ),
-                                onPressed: login,
-                                child: Text(
-                                  "Masuk",
-                                  style: TextStyle(
-                                    color: AppColors.secondary,
-                                  ),
-                                ),
+                                onPressed: _isLoading ? null : login,
+                                child: _isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white)
+                                    : Text(
+                                        "Masuk",
+                                        style: TextStyle(
+                                          color: AppColors.secondary,
+                                        ),
+                                      ),
                               ),
                             ),
                           ),
@@ -171,13 +182,12 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const CircleAvatar(
-                                  maxRadius: 25,
-                                  backgroundColor: Colors.white,
-                                  backgroundImage: AssetImage(
-                                      "assets/images/googleLogo.png")),
-                              SizedBox(
-                                width: size.width * 0.03,
+                                maxRadius: 25,
+                                backgroundColor: Colors.white,
+                                backgroundImage:
+                                    AssetImage("assets/images/googleLogo.png"),
                               ),
+                              SizedBox(width: size.width * 0.03),
                               const CircleAvatar(
                                 maxRadius: 16,
                                 backgroundColor: Colors.white,
@@ -188,26 +198,24 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                    ),
-                    //
-
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: size.height * 0.03),
-                      child: Column(
-                        children: [
-                          const Text("Belum Punya Akun?"),
-                          GestureDetector(
-                            onTap: widget.onTap,
-                            child: Text("Daftar disini!",
-                                style: TextStyle(
-                                  color: AppColors.third,
-                                )),
-                          )
-                        ],
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: size.height * 0.03),
+                        child: Column(
+                          children: [
+                            const Text("Belum Punya Akun?"),
+                            GestureDetector(
+                              onTap: widget.onTap,
+                              child: Text(
+                                "Daftar disini!",
+                                style: TextStyle(color: AppColors.third),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

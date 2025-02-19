@@ -65,7 +65,7 @@ class DatabaseServices {
 
   // Edit user info
   Future<void> updateUserBioInFirebase(String bio) async {
-    String uid = AuthServices().getCurrentUid();
+    String uid = AuthServices().getCurrentUid()!;
 
     try {
       await _db.collection('Users').doc(uid).update({'bio': bio});

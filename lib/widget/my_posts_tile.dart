@@ -77,7 +77,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
 
   void showOption() {
     // Cek user
-    String currentId = AuthServices().getCurrentUid();
+    String currentId = AuthServices().getCurrentUid()!;
     final bool isOwnPost = widget.post.uid == currentId;
 
     // Pilihan

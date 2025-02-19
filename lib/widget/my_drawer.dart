@@ -1,7 +1,7 @@
-import 'package:bincang/screens/profile_page.dart';
-import 'package:bincang/screens/search_page.dart';
+import 'package:bincang/user/screens/profile_page.dart';
+import 'package:bincang/user/screens/search_page.dart';
 import 'package:bincang/widget/my_drawer_tile.dart';
-import 'package:bincang/screens/setting_page.dart';
+import 'package:bincang/user/screens/setting_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +52,7 @@ class MyDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              ProfilePage(uid: _auth.getCurrentUid()),
+                              ProfilePage(uid: _auth.getCurrentUid()!),
                         ));
                   },
                 ),

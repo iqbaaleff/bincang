@@ -1,10 +1,10 @@
 import 'package:bincang/models/post.dart';
-import 'package:bincang/screens/account_setting_page.dart';
-import 'package:bincang/screens/add_post_page.dart';
-import 'package:bincang/screens/blocked_user_page.dart';
-import 'package:bincang/screens/home_page.dart';
-import 'package:bincang/screens/post_page.dart';
-import 'package:bincang/screens/profile_page.dart';
+import 'package:bincang/user/screens/account_setting_page.dart';
+import 'package:bincang/user/screens/add_post_page.dart';
+import 'package:bincang/user/screens/blocked_user_page.dart';
+import 'package:bincang/user/screens/home_page.dart';
+import 'package:bincang/user/screens/post_page.dart';
+import 'package:bincang/user/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
 void goUserPage(BuildContext context, String uid) {

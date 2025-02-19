@@ -1,5 +1,5 @@
-import 'package:bincang/screens/login_page.dart';
-import 'package:bincang/screens/register_page.dart';
+import 'package:bincang/login_page.dart';
+import 'package:bincang/register_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginRegister extends StatefulWidget {
