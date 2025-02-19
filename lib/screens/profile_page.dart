@@ -122,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         title: Text(
           isLoading ? '' : user!.name,
           style: TextStyle(
@@ -130,26 +130,22 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.third,
-          ),
-          onPressed: () => goHomePage(context),
-        ),
       ),
       body: ListView(
         children: [
           // Username
-          Center(
-            child: Text(isLoading ? '' : '@${user!.username}',
-                style: TextStyle(
-                  color: AppColors.text,
-                )),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
+            child: Center(
+              child: Text(isLoading ? '' : '@${user!.username}',
+                  style: TextStyle(
+                    color: AppColors.third,
+                  )),
+            ),
           ),
           // Profile Picture
           Padding(
-            padding: EdgeInsets.symmetric(vertical: size.height * 0.05),
+            padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
             child: Center(
               child: Container(
                 decoration: BoxDecoration(

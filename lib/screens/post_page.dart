@@ -19,6 +19,27 @@ class _PostPageState extends State<PostPage> {
   late final listeningProvider = Provider.of<DatabaseProvider>(context);
   late final databaseProvider =
       Provider.of<DatabaseProvider>(context, listen: false);
+
+  bool _showCommentField = false;
+  final TextEditingController _commentController = TextEditingController();
+
+  void _toggleCommentField() {
+    setState(() {
+      _showCommentField = !_showCommentField;
+    });
+  }
+
+  void _submitComment() {
+    final text = _commentController.text.trim();
+    if (text.isNotEmpty) {
+      databaseProvider.addComments(widget.post.id, text);
+      _commentController.clear();
+      setState(() {
+        _showCommentField = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final allComments = listeningProvider.getComments(widget.post.id);
@@ -32,34 +53,62 @@ class _PostPageState extends State<PostPage> {
         ),
         backgroundColor: Colors.transparent,
       ),
-      body: ListView(
+      body: Column(
         children: [
-          MyPostsTile(
-            post: widget.post,
-            onUserTap: () => goUserPage(context, widget.post.uid),
-            onPostTap: () {},
-          ),
-
-          // Comment di postingan ini
-          allComments.isEmpty
-              ? Center(
-                  child: Text(
-                    "Tidak ada komentar..",
-                    style: TextStyle(color: Colors.black),
+          Expanded(
+            child: ListView(
+              children: [
+                MyPostsTile(
+                  post: widget.post,
+                  onUserTap: () => goUserPage(context, widget.post.uid),
+                  onCommentTap: _toggleCommentField,
+                ),
+                if (_showCommentField)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _commentController,
+                            decoration: InputDecoration(
+                              hintText: "Tulis komentar...",
+                              border: UnderlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send, color: AppColors.third),
+                          onPressed: _submitComment,
+                        ),
+                      ],
+                    ),
                   ),
-                )
-              : ListView.builder(
-                  itemCount: allComments.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final comment = allComments[index];
-                    return MyCommentTile(
-                      comment: comment,
-                      onUserTap: () => goUserPage(context, comment.uid),
-                    );
-                  },
-                )
+                allComments.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Tidak ada komentar..",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: allComments.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final comment = allComments[index];
+                          return MyCommentTile(
+                            comment: comment,
+                            onUserTap: () => goUserPage(context, comment.uid),
+                          );
+                        },
+                      ),
+              ],
+            ),
+          ),
         ],
       ),
     );

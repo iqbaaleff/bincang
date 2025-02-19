@@ -42,7 +42,7 @@ class _AccountSettingPageState extends State<AccountSettingPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         title: Text(
           "Pengaturan akun",
           style: TextStyle(color: AppColors.third),

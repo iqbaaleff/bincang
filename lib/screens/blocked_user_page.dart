@@ -63,7 +63,7 @@ class _BlockedUserPageState extends State<BlockedUsersPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         title: Text(
           "Pengguna yang diblokir",
           style: TextStyle(color: AppColors.third),

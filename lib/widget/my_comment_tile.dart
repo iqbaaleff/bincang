@@ -1,3 +1,5 @@
+import 'package:bincang/helper/app_colors.dart';
+import 'package:bincang/helper/time_formatter.dart';
 import 'package:bincang/models/comment.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_provider.dart';
@@ -25,7 +27,10 @@ class MyCommentTile extends StatelessWidget {
               if (isOwnComment)
                 // Tombol hapus
                 ListTile(
-                  leading: Icon(Icons.delete),
+                  leading: Icon(
+                    Icons.delete,
+                    color: AppColors.third,
+                  ),
                   title: Text("Hapus"),
                   onTap: () async {
                     Navigator.pop(context);
@@ -36,7 +41,7 @@ class MyCommentTile extends StatelessWidget {
               else ...{
                 // Report user
                 ListTile(
-                  leading: Icon(Icons.flag),
+                  leading: Icon(Icons.flag, color: AppColors.third),
                   title: Text("Laporkan"),
                   onTap: () {
                     Navigator.pop(context);
@@ -44,7 +49,10 @@ class MyCommentTile extends StatelessWidget {
                 ),
                 // Block user
                 ListTile(
-                  leading: Icon(Icons.block),
+                  leading: Icon(
+                    Icons.block,
+                    color: AppColors.third,
+                  ),
                   title: Text("Blokir"),
                   onTap: () {
                     Navigator.pop(context);
@@ -84,15 +92,12 @@ class MyCommentTile extends StatelessWidget {
                     comment.name,
                     style: TextStyle(
                       color: Colors.black54,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 Text(
-                  "@" + comment.username,
-                  style: TextStyle(
-                    color: Colors.black54,
-                  ),
+                  formatTimestamp(comment.timestamp),
+                  style: TextStyle(color: AppColors.third, fontSize: 12),
                 ),
                 const Spacer(),
                 GestureDetector(
@@ -111,6 +116,54 @@ class MyCommentTile extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
             child: Text(comment.message),
+          ),
+
+          Row(
+            children: [
+              // LIKES
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.favorite_border,
+                      color: AppColors.text,
+                    ),
+                  ),
+
+                  // Like count
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                    child: Text("0"),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: size.width * 0.03,
+              ),
+              // COMMENT
+              GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  Icons.comment_outlined,
+                  color: AppColors.text,
+                ),
+              ),
+
+              // Comment count
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                child: Text(
+                  "0",
+                  style: TextStyle(
+                    color: AppColors.text,
+                  ),
+                ),
+              ),
+
+              const Spacer(),
+            ],
           ),
         ],
       ),

@@ -153,7 +153,7 @@ class _HomepageState extends State<Homepage> {
       ),
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
-        onPressed: _openPostMessage,
+        onPressed: () => goAddPostPage(context, AuthServices().getCurrentUid()),
         backgroundColor: AppColors.third,
         child: Icon(Icons.add, color: AppColors.secondary),
       ),

@@ -22,18 +22,18 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.primary,
           title: TextField(
             controller: _searchController,
             decoration: InputDecoration(
               hintText: "Cari disini..",
               hintStyle: TextStyle(
-                color: AppColors.text,
+                color: AppColors.secondary,
               ),
               border: InputBorder.none,
               suffixIcon: Icon(
                 Icons.search,
-                color: AppColors.text,
+                color: AppColors.third,
               ),
             ),
             style: TextStyle(

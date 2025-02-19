@@ -1,5 +1,6 @@
 import 'package:bincang/models/post.dart';
 import 'package:bincang/screens/account_setting_page.dart';
+import 'package:bincang/screens/add_post_page.dart';
 import 'package:bincang/screens/blocked_user_page.dart';
 import 'package:bincang/screens/home_page.dart';
 import 'package:bincang/screens/post_page.dart';
@@ -52,5 +53,14 @@ void goHomePage(BuildContext context) {
       builder: (context) => Homepage(),
     ),
     (route) => route.isFirst,
+  );
+}
+
+void goAddPostPage(BuildContext context, String uid) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AddPostPage(uid: uid,),
+    ),
   );
 }

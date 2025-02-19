@@ -18,7 +18,7 @@ class MyInputAlertBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return AlertDialog(
-      backgroundColor: AppColors.third,
+      backgroundColor: AppColors.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
@@ -31,11 +31,11 @@ class MyInputAlertBox extends StatelessWidget {
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hintText,
-            hintStyle: TextStyle(color: AppColors.text),
-            counterStyle: TextStyle(color: AppColors.text),
+            hintStyle: TextStyle(color: AppColors.third),
+            counterStyle: TextStyle(color: AppColors.third),
           ),
           style: TextStyle(
-            color: AppColors.text,
+            color: AppColors.third,
           ),
         ),
       ),
@@ -45,7 +45,7 @@ class MyInputAlertBox extends StatelessWidget {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: AppColors.third,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
@@ -57,7 +57,7 @@ class MyInputAlertBox extends StatelessWidget {
               child: Text(
                 "Batal",
                 style: TextStyle(
-                  color: AppColors.text,
+                  color: AppColors.secondary,
                 ),
               ),
             ),
@@ -66,7 +66,7 @@ class MyInputAlertBox extends StatelessWidget {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: AppColors.third,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
@@ -76,10 +76,7 @@ class MyInputAlertBox extends StatelessWidget {
                 onPressed!();
                 textController.clear();
               },
-              child: Text(
-                onPressedText,
-                style: TextStyle(color: AppColors.text),
-              ),
+              child: Icon(Icons.save, color: AppColors.secondary),
             ),
           ],
         ),

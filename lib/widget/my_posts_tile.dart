@@ -9,11 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyPostsTile extends StatefulWidget {
+  final void Function()? onCommentTap;
   final void Function()? onUserTap;
   final void Function()? onPostTap;
   final Post post;
   const MyPostsTile(
-      {super.key, required this.post, this.onUserTap, this.onPostTap});
+      {super.key,
+      required this.post,
+      this.onUserTap,
+      this.onPostTap,
+      this.onCommentTap});
 
   @override
   State<MyPostsTile> createState() => _MyPostsTileState();
@@ -85,7 +90,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
               if (isOwnPost)
                 // Tombol hapus
                 ListTile(
-                  leading: Icon(Icons.delete),
+                  leading: Icon(Icons.delete, color: AppColors.third),
                   title: Text("Hapus"),
                   onTap: () async {
                     Navigator.pop(context);
@@ -93,9 +98,12 @@ class _MyPostsTileState extends State<MyPostsTile> {
                   },
                 )
               else ...{
-                // Report userew
+                // Report user
                 ListTile(
-                  leading: Icon(Icons.flag),
+                  leading: Icon(
+                    Icons.flag,
+                    color: AppColors.third,
+                  ),
                   title: Text("Laporkan"),
                   onTap: () {
                     Navigator.pop(context);
@@ -104,7 +112,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                 ),
                 // Block user
                 ListTile(
-                  leading: Icon(Icons.block),
+                  leading: Icon(Icons.block, color: AppColors.third),
                   title: Text("Blokir"),
                   onTap: () {
                     Navigator.pop(context);
@@ -160,11 +168,28 @@ class _MyPostsTileState extends State<MyPostsTile> {
         actions: [
           // Batal
           TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: AppColors.third,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
             onPressed: () => Navigator.pop(context),
-            child: Text("Batal"),
+            child: Text(
+              "Batal",
+              style: TextStyle(
+                color: AppColors.secondary,
+              ),
+            ),
           ),
           // Block
           TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: AppColors.third,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
             onPressed: () async {
               await databaseProvider.blockUser(widget.post.uid);
               Navigator.pop(context);
@@ -175,7 +200,12 @@ class _MyPostsTileState extends State<MyPostsTile> {
                 ),
               );
             },
-            child: Text("Blokir"),
+            child: Text(
+              "Blokir",
+              style: TextStyle(
+                color: AppColors.secondary,
+              ),
+            ),
           ),
         ],
       ),
@@ -226,9 +256,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                       ),
                       Text(
                         formatTimestamp(widget.post.timestamp),
-                        style: TextStyle(
-                          color: AppColors.third,
-                        ),
+                        style: TextStyle(color: AppColors.third, fontSize: 12),
                       ),
                       const Spacer(),
                       GestureDetector(
@@ -293,7 +321,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                     ),
                     // COMMENT
                     GestureDetector(
-                      onTap: _openNewCommentBox,
+                      onTap: widget.onCommentTap,
                       child: Icon(
                         Icons.comment_outlined,
                         color: AppColors.text,

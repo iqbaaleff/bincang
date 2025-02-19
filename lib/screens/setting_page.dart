@@ -23,7 +23,7 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         title: Text(
           "Pengaturan",
           style: TextStyle(
@@ -48,7 +48,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
           MySettingTile(
-            title: "Keluar akun",
+            title: "Keluar",
             action: IconButton(
               onPressed: logout,
               icon: Icon(Icons.logout_outlined),
