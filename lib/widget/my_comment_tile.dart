@@ -1,23 +1,28 @@
-import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/helper/time_formatter.dart';
 import 'package:bincang/models/comment.dart';
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyCommentTile extends StatelessWidget {
   final Comment comment;
-  final void Function()? onUserTap;
-  MyCommentTile({super.key, required this.comment, this.onUserTap});
+  final VoidCallback onUserTap;
+  final VoidCallback onReplyTap;
+
+  const MyCommentTile({
+    Key? key,
+    required this.comment,
+    required this.onUserTap,
+    required this.onReplyTap,
+  }) : super(key: key);
 
   void showOption(BuildContext context) {
-    // Cek user
-    String currentId = AuthServices().getCurrentUid()!;
+    final currentId = AuthServices().getCurrentUid();
+    if (currentId == null) return; // Hindari error jika currentId null
     final bool isOwnComment = comment.uid == currentId;
 
-    // Pilihan
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -25,12 +30,8 @@ class MyCommentTile extends StatelessWidget {
           child: Wrap(
             children: [
               if (isOwnComment)
-                // Tombol hapus
                 ListTile(
-                  leading: Icon(
-                    Icons.delete,
-                    color: AppColors.third,
-                  ),
+                  leading: Icon(Icons.delete, color: AppColors.third),
                   title: Text("Hapus"),
                   onTap: () async {
                     Navigator.pop(context);
@@ -38,27 +39,18 @@ class MyCommentTile extends StatelessWidget {
                         .deleteComments(comment.id, comment.postId);
                   },
                 )
-              else ...{
-                // Report user
+              else ...[
                 ListTile(
                   leading: Icon(Icons.flag, color: AppColors.third),
                   title: Text("Laporkan"),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 ),
-                // Block user
                 ListTile(
-                  leading: Icon(
-                    Icons.block,
-                    color: AppColors.third,
-                  ),
+                  leading: Icon(Icons.block, color: AppColors.third),
                   title: Text("Blokir"),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                )
-              },
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
             ],
           ),
         );
@@ -69,104 +61,111 @@ class MyCommentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: size.width * 0.05, vertical: size.height * 0.004),
-      padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.02, vertical: size.height * 0.02),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //Bagian atas
-          GestureDetector(
-            onTap: onUserTap,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.person,
-                  color: Colors.black54,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                  child: Text(
-                    comment.name,
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-                Text(
-                  formatTimestamp(comment.timestamp),
-                  style: TextStyle(color: AppColors.third, fontSize: 12),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () => showOption(context),
-                  child: Icon(Icons.more_horiz),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(
-            height: size.height * 0.004,
-          ),
-
-          // Konten
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
-            child: Text(comment.message),
-          ),
-
           Row(
             children: [
-              // LIKES
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                      Icons.favorite_border,
-                      color: AppColors.text,
-                    ),
-                  ),
-
-                  // Like count
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                    child: Text("0"),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: size.width * 0.03,
-              ),
-              // COMMENT
               GestureDetector(
-                onTap: () {},
-                child: Icon(
-                  Icons.comment_outlined,
-                  color: AppColors.text,
+                onTap: onUserTap,
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: AppColors.text),
+                    SizedBox(width: size.width * 0.01),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              comment.name,
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(width: size.width * 0.03),
+                            Text(
+                              formatTimestamp(comment.timestamp),
+                              style: TextStyle(
+                                color: AppColors.third,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "@${comment.username}",
+                          style: TextStyle(
+                            color: AppColors.third,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-
-              // Comment count
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                child: Text(
-                  "0",
-                  style: TextStyle(
-                    color: AppColors.text,
-                  ),
-                ),
+              Spacer(),
+              GestureDetector(
+                onTap: () => showOption(context), // Perbaikan panggilan fungsi
+                child: Icon(Icons.more_horiz, color: AppColors.third),
               ),
-
-              const Spacer(),
             ],
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: Text.rich(_buildStyledText(comment.message)),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: GestureDetector(
+              onTap: onReplyTap,
+              child: Text(
+                "Balas",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.third,
+                ),
+              ),
+            ),
+          ),
+          Divider(color: Colors.grey.shade300),
         ],
       ),
     );
+  }
+
+  TextSpan _buildStyledText(String text) {
+    final regex = RegExp(r'@\w+');
+    final spans = <TextSpan>[];
+    int lastMatchEnd = 0;
+
+    for (final match in regex.allMatches(text)) {
+      if (match.start > lastMatchEnd) {
+        spans.add(TextSpan(
+          text: text.substring(lastMatchEnd, match.start),
+          style: TextStyle(color: Colors.black),
+        ));
+      }
+      spans.add(TextSpan(
+        text: match.group(0),
+        style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+      ));
+      lastMatchEnd = match.end;
+    }
+
+    if (lastMatchEnd < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(lastMatchEnd),
+        style: TextStyle(color: Colors.black),
+      ));
+    }
+
+    return TextSpan(children: spans);
   }
 }

@@ -37,6 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isFollowing = false;
 
   @override
+  void dispose() {
+    bioController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -51,9 +57,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     _isFollowing = databaseProvider.isFollowing(widget.uid);
 
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   // Edit Bio

@@ -165,6 +165,8 @@ class DatabaseServices {
     }
   }
 
+  // Get individual post
+
   /*
   LIKES
   */
@@ -209,30 +211,32 @@ class DatabaseServices {
   COMMENT
   */
 
-  // Add comment
-  Future<void> addCommentInFirebase(String postId, message) async {
+  // Add Comment (Bisa Komentar Baru atau Balasan)
+  Future<void> addCommentInFirebase(String postId, String message,
+      {String? parentId}) async {
+    if (message.trim().isEmpty) return;
+
     try {
-      // Get user
       String uid = _auth.currentUser!.uid;
       UserProfile? user = await getUserFromFirebase(uid);
 
-      // Buat Comment baru
+      // Buat reference dokumen baru di Firestore (Firestore akan otomatis membuat ID unik)
+      DocumentReference docRef = _db.collection('Comments').doc();
+
       Comment newComment = Comment(
         id: '',
         postId: postId,
         uid: uid,
         name: user!.name,
-        username: user!.username,
+        username: user.username,
         message: message,
         timestamp: Timestamp.now(),
+        parentId: parentId, // Bisa null jika komentar utama
       );
 
-      Map<String, dynamic> newCommentMap = newComment.toMap();
-
-      // Simpan data ke firebase
-      await _db.collection('Comments').add(newCommentMap);
+      await _db.collection('Comments').add(newComment.toMap());
     } catch (e) {
-      print(e);
+      print("Error adding comment: $e");
     }
   }
 
@@ -245,19 +249,23 @@ class DatabaseServices {
     }
   }
 
-  // Fetch comment
+  // Ambil komentar berdasarkan `postId`
   Future<List<Comment>> getCommentFromFirebase(String postId) async {
-    try {
-      QuerySnapshot snapshot = await _db
-          .collection('Comments')
-          .where("postId", isEqualTo: postId)
-          .get();
-      return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
-    } catch (e) {
-      print(e);
-      return [];
-    }
+  try {
+    QuerySnapshot snapshot = await _db
+        .collection('Comments')
+        .where("postId", isEqualTo: postId)
+        .orderBy("timestamp", descending: false) // Pastikan orderBy ada
+        .get();
+
+    print("Jumlah komentar diambil: ${snapshot.docs.length}"); // Log jumlah data
+
+    return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
+  } catch (e) {
+    print("Error fetching comments: $e");
+    return [];
   }
+}
 
   /* 
   REPORT, BLOCK, DELETE AKUN

@@ -8,6 +8,7 @@ class Comment {
   final String username;
   final String message;
   final Timestamp timestamp;
+  final String? parentId; // Menandakan ini balasan dari komentar lain
 
   Comment({
     required this.id,
@@ -17,6 +18,7 @@ class Comment {
     required this.username,
     required this.message,
     required this.timestamp,
+    this.parentId,
   });
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
@@ -28,10 +30,11 @@ class Comment {
       username: doc['username'],
       message: doc['message'],
       timestamp: doc['timestamp'],
+      parentId:
+          doc.data().toString().contains('parentId') ? doc['parentId'] : null,
     );
   }
 
-  // App -> firebase
   Map<String, dynamic> toMap() {
     return {
       'postId': postId,
@@ -40,6 +43,7 @@ class Comment {
       'username': username,
       'message': message,
       'timestamp': timestamp,
+      'parentId': parentId,
     };
   }
 }

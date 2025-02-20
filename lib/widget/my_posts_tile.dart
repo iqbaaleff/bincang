@@ -246,17 +246,39 @@ class _MyPostsTileState extends State<MyPostsTile> {
                       Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                        child: Text(
-                          widget.post.name,
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  widget.post.name,
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: size.width * 0.03),
+                                  child: Text(
+                                    formatTimestamp(widget.post.timestamp),
+                                    style: TextStyle(
+                                        color: AppColors.third, fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              "@${widget.post.username}",
+                              style: TextStyle(
+                                color: AppColors.third,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Text(
-                        formatTimestamp(widget.post.timestamp),
-                        style: TextStyle(color: AppColors.third, fontSize: 12),
                       ),
                       const Spacer(),
                       GestureDetector(
