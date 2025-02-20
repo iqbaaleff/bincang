@@ -7,6 +7,7 @@ class UserProfile {
   final String noTel;
   final String username;
   final String bio;
+  final String role;
 
   UserProfile({
     required this.uid,
@@ -15,6 +16,7 @@ class UserProfile {
     required this.noTel,
     required this.username,
     required this.bio,
+    required this.role,
   });
 
   // Firebase -> app
@@ -26,6 +28,7 @@ class UserProfile {
       noTel: doc['noTel'],
       username: doc['username'],
       bio: doc['bio'],
+      role: doc['role'],
     );
   }
 
@@ -38,6 +41,7 @@ class UserProfile {
       'noTel': noTel,
       'username': username,
       'bio': bio,
+      'role': role,
     };
   }
 }

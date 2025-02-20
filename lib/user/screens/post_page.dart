@@ -42,7 +42,8 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final allComments = listeningProvider.getComments(widget.post.id);
+    final allComments =
+        listeningProvider.getComments(widget.post.id).reversed.toList();
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/services/database/database_provider.dart';
 import 'package:bincang/widget/my_user_tile.dart';
@@ -40,12 +41,12 @@ class _FollowListPageState extends State<FollowListPage> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.amber,
+            backgroundColor: AppColors.primary,
             bottom: TabBar(
                 dividerColor: Colors.transparent,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.black54,
-                indicatorColor: Colors.grey,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.white,
                 tabs: [
                   Tab(
                     text: "Pengikut",
@@ -74,7 +75,7 @@ class _FollowListPageState extends State<FollowListPage> {
             itemBuilder: (context, index) {
               final user = userList[index];
 
-              return MyUserTile(user: user);
+              return Text(user.name);
             },
           );
   }

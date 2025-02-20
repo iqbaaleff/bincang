@@ -307,8 +307,8 @@ class DatabaseProvider extends ChangeNotifier {
     return _followers[uid]?.contains(currentUserId) ?? false;
   }
 
-  final Map<String, List<UserProfile>> _followersProfile = {};
-  final Map<String, List<UserProfile>> _followingProfile = {};
+  Map<String, List<UserProfile>> _followersProfile = {};
+  Map<String, List<UserProfile>> _followingProfile = {};
   List<UserProfile> getListOfFollowersProfile(String uid) =>
       _followersProfile[uid] ?? [];
   List<UserProfile> getListOfFollowingProfile(String uid) =>

@@ -19,6 +19,7 @@ class DatabaseServices {
     required String name,
     required String email,
     required String noTel,
+    String? role,
   }) async {
     try {
       // Ambil UID pengguna yang sedang login
@@ -27,13 +28,13 @@ class DatabaseServices {
 
       // Buat objek user profile
       UserProfile user = UserProfile(
-        uid: uid,
-        name: name,
-        email: email,
-        noTel: noTel,
-        username: username,
-        bio: '',
-      );
+          uid: uid,
+          name: name,
+          email: email,
+          noTel: noTel,
+          username: username,
+          bio: '',
+          role: 'user');
 
       final userMap = user.toMap();
 
@@ -163,8 +164,6 @@ class DatabaseServices {
       return [];
     }
   }
-
-  // Get individual post
 
   /*
   LIKES

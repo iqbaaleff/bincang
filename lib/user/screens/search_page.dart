@@ -37,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             style: TextStyle(
-              color: AppColors.text,
+              color: AppColors.secondary,
             ),
             onChanged: (value) {
               if (value.isNotEmpty) {
