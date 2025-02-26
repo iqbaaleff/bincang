@@ -52,10 +52,10 @@ class AuthGate extends StatelessWidget {
                     String? role = roleSnapshot.data;
                     if (role == "admin") {
                       print("Navigating to Admin Page");
-                      return const HomepageAdmin();
+                      return HomepageAdmin();
                     } else {
                       print("Navigating to User Home Page");
-                      return  Homepage();
+                      return Homepage();
                     }
                   }
 

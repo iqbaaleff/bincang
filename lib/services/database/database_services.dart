@@ -311,6 +311,7 @@ class DatabaseServices {
   // Get list blocked uid
   Future<List<String>> getBlockedUidFromFirebase() async {
     final currentUserId = _auth.currentUser!.uid;
+    
 
     final snapshot = await _db
         .collection("Users")

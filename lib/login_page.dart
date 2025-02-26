@@ -37,9 +37,11 @@ class _LoginPageState extends State<LoginPage> {
       await _auth.loginEmailPassword(
           emailController.text.trim(), pwController.text.trim());
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login gagal: ${e.toString()}")),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login gagal: ${e.toString()}")),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
