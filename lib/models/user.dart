@@ -8,6 +8,7 @@ class UserProfile {
   final String username;
   final String bio;
   final String role;
+  final Timestamp createdAt;
 
   UserProfile({
     required this.uid,
@@ -17,6 +18,7 @@ class UserProfile {
     required this.username,
     required this.bio,
     required this.role,
+    required this.createdAt,
   });
 
   // Firebase -> app
@@ -29,6 +31,7 @@ class UserProfile {
       username: doc['username'],
       bio: doc['bio'],
       role: doc['role'],
+      createdAt: doc['createdAt'],
     );
   }
 
@@ -42,6 +45,7 @@ class UserProfile {
       'username': username,
       'bio': bio,
       'role': role,
+      'createdAt': createdAt,
     };
   }
 }

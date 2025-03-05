@@ -28,13 +28,15 @@ class DatabaseServices {
 
       // Buat objek user profile
       UserProfile user = UserProfile(
-          uid: uid,
-          name: name,
-          email: email,
-          noTel: noTel,
-          username: username,
-          bio: '',
-          role: 'user');
+        uid: uid,
+        name: name,
+        email: email,
+        noTel: noTel,
+        username: username,
+        bio: '',
+        role: 'user',
+        createdAt: Timestamp.now(),
+      );
 
       final userMap = user.toMap();
 
@@ -251,21 +253,22 @@ class DatabaseServices {
 
   // Ambil komentar berdasarkan `postId`
   Future<List<Comment>> getCommentFromFirebase(String postId) async {
-  try {
-    QuerySnapshot snapshot = await _db
-        .collection('Comments')
-        .where("postId", isEqualTo: postId)
-        .orderBy("timestamp", descending: false) // Pastikan orderBy ada
-        .get();
+    try {
+      QuerySnapshot snapshot = await _db
+          .collection('Comments')
+          .where("postId", isEqualTo: postId)
+          .orderBy("timestamp", descending: false) // Pastikan orderBy ada
+          .get();
 
-    print("Jumlah komentar diambil: ${snapshot.docs.length}"); // Log jumlah data
+      print(
+          "Jumlah komentar diambil: ${snapshot.docs.length}"); // Log jumlah data
 
-    return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
-  } catch (e) {
-    print("Error fetching comments: $e");
-    return [];
+      return snapshot.docs.map((doc) => Comment.fromDocument(doc)).toList();
+    } catch (e) {
+      print("Error fetching comments: $e");
+      return [];
+    }
   }
-}
 
   /* 
   REPORT, BLOCK, DELETE AKUN
@@ -311,7 +314,6 @@ class DatabaseServices {
   // Get list blocked uid
   Future<List<String>> getBlockedUidFromFirebase() async {
     final currentUserId = _auth.currentUser!.uid;
-    
 
     final snapshot = await _db
         .collection("Users")

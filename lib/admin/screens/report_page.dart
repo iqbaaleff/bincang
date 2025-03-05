@@ -1,6 +1,7 @@
 import 'package:bincang/admin/screens/manage_post_page.dart';
 import 'package:bincang/admin/screens/report_page.dart';
 import 'package:bincang/admin/screens/statistics_page.dart';
+import 'package:bincang/helper/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,7 @@ class ReportPage extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPage> {
-  late Future<List<DocumentSnapshot>> _reportedUsers;
+  late Future<List<Map<String, dynamic>>> _reportedUsers;
 
   @override
   void initState() {
@@ -21,10 +22,79 @@ class _ReportPageState extends State<ReportPage> {
     _reportedUsers = getReportedUsers();
   }
 
-  Future<List<DocumentSnapshot>> getReportedUsers() async {
-    QuerySnapshot reports =
-        await FirebaseFirestore.instance.collection('Reports').get();
-    return reports.docs;
+  // Fungsi untuk mengambil data pengguna berdasarkan userId
+  Future<Map<String, dynamic>?> getUserData(String userId) async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .get();
+      if (userDoc.exists) {
+        return userDoc.data() as Map<String, dynamic>?;
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+    return null;
+  }
+
+  // Fungsi untuk mengambil data laporan dan menggabungkannya dengan data pengguna
+  Future<List<Map<String, dynamic>>> getReportedUsers() async {
+    try {
+      QuerySnapshot reports =
+          await FirebaseFirestore.instance.collection('Reports').get();
+
+      // Ambil data pengguna untuk setiap laporan
+      List<Map<String, dynamic>> reportedUsersWithData = await Future.wait(
+        reports.docs.map((doc) async {
+          Map<String, dynamic> reportData = doc.data() as Map<String, dynamic>;
+          String userId = reportData['messageOwnerId'];
+          String reportedById = reportData['reportedBy'];
+
+          // Ambil data pengguna yang dilaporkan
+          Map<String, dynamic>? userData = await getUserData(userId);
+          // Ambil data pengguna yang melaporkan
+          Map<String, dynamic>? reportedByData =
+              await getUserData(reportedById);
+
+          return {
+            ...reportData,
+            'username': userData?['username'] ?? 'Unknown User',
+            'reportedByUsername': reportedByData?['username'] ?? 'Unknown User',
+            'reportId': doc.id, // Simpan ID laporan untuk referensi
+          };
+        }),
+      );
+
+      return reportedUsersWithData;
+    } catch (e) {
+      print("Error fetching reported users: $e");
+      return [];
+    }
+  }
+
+  // Fungsi untuk menolak laporan
+  Future<void> rejectReport(String reportId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Reports')
+          .doc(reportId)
+          .delete();
+
+      setState(() {
+        _reportedUsers = getReportedUsers();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Laporan berhasil ditolak"),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal menolak laporan: $e")),
+      );
+    }
   }
 
   Future<void> suspendUser(String userId) async {
@@ -90,7 +160,7 @@ class _ReportPageState extends State<ReportPage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Expanded(
-              child: FutureBuilder<List<DocumentSnapshot>>(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: _reportedUsers,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -100,25 +170,42 @@ class _ReportPageState extends State<ReportPage> {
                     return Center(child: Text("Tidak ada laporan"));
                   }
                   return ListView(
-                    children: snapshot.data!.map((doc) {
+                    children: snapshot.data!.map((report) {
                       return Card(
                         color: AppColors.third,
                         elevation: 4,
                         margin: EdgeInsets.symmetric(vertical: 8.0),
                         child: ListTile(
-                          title: Text("User ID: ${doc['messageOwnerId']}",
+                          title: Text("Username: ${report['username']}",
                               style: TextStyle(
                                   color: AppColors.secondary,
                                   fontWeight: FontWeight.bold)),
                           subtitle: Text(
-                            "Dilaporkan oleh: ${doc['reportedBy']}",
+                            "Dilaporkan oleh: ${report['reportedByUsername']}",
                             style: TextStyle(color: AppColors.secondary),
                           ),
-                          trailing: Column(
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Tombol Tolak
                               ElevatedButton(
                                 onPressed: () =>
-                                    suspendUser(doc['messageOwnerId']),
+                                    rejectReport(report['reportId']),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange,
+                                ),
+                                child: Text(
+                                  "Tolak",
+                                  style: TextStyle(
+                                    color: AppColors.secondary,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8), // Jarak antara tombol
+                              // Tombol Suspend
+                              ElevatedButton(
+                                onPressed: () =>
+                                    suspendUser(report['messageOwnerId']),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                 ),

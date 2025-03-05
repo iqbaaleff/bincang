@@ -1,12 +1,7 @@
+import 'package:bincang/helper/app_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class AppColors {
-  static Color primary = Color(0xff2d3342);
-  static Color secondary = Color(0xfff5f8f9);
-  static Color third = Color(0xff689f99);
-  static Color text = Colors.black54;
-}
 
 class StatisticsPage extends StatelessWidget {
   Future<int> _getCount(String collection, {String? field}) async {

@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login gagal: ${e.toString()}")),
+          SnackBar(content: Text(e.toString())),
         );
       }
     } finally {
