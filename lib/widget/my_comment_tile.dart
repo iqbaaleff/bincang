@@ -134,7 +134,6 @@ class MyCommentTile extends StatelessWidget {
               ),
             ),
           ),
-          Divider(color: Colors.grey.shade300),
         ],
       ),
     );

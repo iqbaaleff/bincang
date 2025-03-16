@@ -180,24 +180,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const CircleAvatar(
-                                maxRadius: 25,
-                                backgroundColor: Colors.white,
-                                backgroundImage:
-                                    AssetImage("assets/images/googleLogo.png"),
-                              ),
-                              SizedBox(width: size.width * 0.03),
-                              const CircleAvatar(
-                                maxRadius: 16,
-                                backgroundColor: Colors.white,
-                                backgroundImage: AssetImage(
-                                    "assets/images/facebookLogo.png"),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                       Padding(

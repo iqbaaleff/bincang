@@ -174,13 +174,13 @@ class _ProfilePageState extends State<ProfilePage> {
             postCount: allUserPost.length,
             followerCount: followerCount,
             followingCount: followingCount,
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FollowListPage(
-                    uid: widget.uid,
-                  ),
-                )),
+            // onTap: () => Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => FollowListPage(
+            //         uid: widget.uid,
+            //       ),
+            //     )),
           ),
 
           // Follow/Unfollow Button

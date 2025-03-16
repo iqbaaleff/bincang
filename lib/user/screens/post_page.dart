@@ -23,6 +23,9 @@ class _PostPageState extends State<PostPage> {
   bool _showCommentField = false;
   String? _replyingToCommentId;
 
+  // Map untuk menyimpan status tampilan balasan komentar
+  final Map<String, bool> _showReplies = {};
+
   @override
   void initState() {
     super.initState();
@@ -53,30 +56,50 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  // Fungsi untuk menampilkan atau menyembunyikan balasan komentar
+  void _toggleRepliesVisibility(String commentId) {
+    setState(() {
+      _showReplies[commentId] = !(_showReplies[commentId] ?? false);
+    });
+  }
+
   List<Widget> _buildComments(List<Comment> allComments, {String? parentId}) {
+    // Filter komentar berdasarkan parentId
     List<Comment> filteredComments =
         allComments.where((comment) => comment.parentId == parentId).toList();
 
     return filteredComments.map((comment) {
-      return Padding(
-        padding: EdgeInsets.only(
-            left: parentId != null ? 20.0 : 0), // Indentasi untuk balasan
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MyCommentTile(
-              comment: comment,
-              onUserTap: () => goUserPage(context, comment.uid),
-              onReplyTap: () => _toggleCommentField(
-                parentId: comment.id,
-                replyingToUser:
-                    comment.username, // Tambahkan nama pengguna ke input
+      // Cek apakah komentar ini memiliki balasan
+      final hasReplies = allComments.any((c) => c.parentId == comment.id);
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MyCommentTile(
+            comment: comment,
+            onUserTap: () => goUserPage(context, comment.uid),
+            onReplyTap: () => _toggleCommentField(
+              parentId: comment.id,
+              replyingToUser:
+                  comment.username, // Tambahkan nama pengguna ke input
+            ),
+          ),
+          // Tombol "Tampilkan Balasan" hanya muncul di komentar induk
+          if (hasReplies && parentId == null)
+            TextButton(
+              onPressed: () => _toggleRepliesVisibility(comment.id),
+              child: Text(
+                _showReplies[comment.id] == true
+                    ? "Sembunyikan Balasan"
+                    : "Tampilkan Balasan",
+                style: TextStyle(color: Colors.blue),
               ),
             ),
+          // Tampilkan balasan jika status true
+          if (_showReplies[comment.id] == true || parentId != null)
             ..._buildComments(allComments,
-                parentId: comment.id), // Rekursif untuk balasan
-          ],
-        ),
+                parentId: comment.id), // Rekursif untuk menampilkan balasan
+        ],
       );
     }).toList();
   }

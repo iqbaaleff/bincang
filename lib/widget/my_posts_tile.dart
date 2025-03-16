@@ -260,7 +260,7 @@ class _MyPostsTileState extends State<MyPostsTile> {
                                 ),
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(left: size.width * 0.03),
+                                      EdgeInsets.only(left: size.width * 0.01),
                                   child: Text(
                                     formatTimestamp(widget.post.timestamp),
                                     style: TextStyle(
