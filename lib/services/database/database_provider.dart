@@ -57,8 +57,8 @@ class DatabaseProvider extends ChangeNotifier {
 
   // Load following posts
   Future<void> loadFollowingPosts() async {
-    String currentUid = _auth.getCurrentUid()!;
-    final followingUserIds = await _db.getFollowingUidsFromFirebase(currentUid);
+    String? currentUid = _auth.getCurrentUid();
+    final followingUserIds = await _db.getFollowingUidsFromFirebase(currentUid!);
     _followingPosts =
         _allPosts.where((post) => followingUserIds.contains(post.uid)).toList();
     notifyListeners();

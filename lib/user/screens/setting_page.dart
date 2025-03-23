@@ -18,6 +18,51 @@ class _SettingPageState extends State<SettingPage> {
     _auth.logout();
   }
 
+  void confirmDelete(BuildContext conntext) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Hapus akun?"),
+        content: Text("Apakah kamu yakin?"),
+        actions: [
+          // Batal
+          TextButton(
+            style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: AppColors.third),
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Batal",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // Block
+          TextButton(
+            style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: AppColors.third),
+            onPressed: () async {
+              await AuthServices().deleteAccount();
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            },
+            child: Text(
+              "Hapus",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,10 +86,10 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
           MySettingTile(
-            title: "Pengaturan akun",
+            title: "Hapus akun",
             action: IconButton(
-              onPressed: () => goAccountSettingPage(context),
-              icon: Icon(Icons.arrow_forward_ios),
+              onPressed: () => confirmDelete(context),
+              icon: Icon(Icons.delete),
             ),
           ),
           MySettingTile(

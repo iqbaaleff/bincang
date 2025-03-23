@@ -8,7 +8,7 @@ class AuthServices {
 
   // Get current user & uid
   User? getCurrentUser() => _auth.currentUser;
-  String getCurrentUid() => _auth.currentUser!.uid;
+  String? getCurrentUid() => _auth.currentUser?.uid;
 
   // Login dengan pengecekan suspend
   Future<UserCredential> loginEmailPassword(
@@ -38,7 +38,7 @@ class AuthServices {
             // Jika masih dalam masa suspend, logout user dan tolak login
             await _auth.signOut();
             throw Exception(
-                "Akun Anda disuspend hingga ${DateFormat('dd MMM yyyy').format(suspendEndDate)}");
+                "Akun Anda telah di-suspend hingga ${DateFormat('dd MMM yyyy').format(suspendEndDate)}. Silakan hubungi admin untuk informasi lebih lanjut.");
           } else {
             // Jika masa suspend sudah habis, hapus status suspend
             await FirebaseFirestore.instance
@@ -49,12 +49,17 @@ class AuthServices {
               'suspendUntil': null,
             });
           }
+        } else if (isSuspended) {
+          // Jika akun di-suspend tanpa batas waktu
+          await _auth.signOut();
+          throw Exception(
+              "Akun Anda telah di-suspend secara permanen. Silakan hubungi admin untuk informasi lebih lanjut.");
         }
       }
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.code);
+      throw Exception(e.message ?? "Terjadi kesalahan saat login.");
     }
   }
 
@@ -79,11 +84,17 @@ class AuthServices {
   // Delete account
   Future<void> deleteAccount() async {
     User? user = getCurrentUser();
-    if (user != null) {
-      // Delete from Firestore
-      await DatabaseServices().deleteUserInfoFromFirebase(user.uid);
-      // Delete user auth record
-      await user.delete();
+    if (user == null) return;
+    await DatabaseServices().deleteUserInfoFromFirebase(user.uid);
+    await user.delete();
+  }
+
+  // Fungsi untuk mengirim email reset password
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message);
     }
   }
 }

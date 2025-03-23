@@ -35,11 +35,26 @@ class _BlockedUserPageState extends State<BlockedUsersPage> {
         actions: [
           // Batal
           TextButton(
+            style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: AppColors.third),
             onPressed: () => Navigator.pop(context),
-            child: Text("Batal"),
+            child: Text(
+              "Batal",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
           // Buka Block
           TextButton(
+            style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: AppColors.third),
             onPressed: () async {
               await databaseProvider.unblockUser(userId);
               Navigator.pop(context);
@@ -50,7 +65,12 @@ class _BlockedUserPageState extends State<BlockedUsersPage> {
                 ),
               );
             },
-            child: Text("Buka Blokir"),
+            child: Text(
+              "Buka Blokir",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
@@ -83,7 +103,7 @@ class _BlockedUserPageState extends State<BlockedUsersPage> {
                 return ListTile(
                   title: Text(
                     user.name,
-                    style: TextStyle(color: AppColors.secondary),
+                    style: TextStyle(color: AppColors.primary),
                   ),
                   subtitle: Text(
                     '@${user.username}',

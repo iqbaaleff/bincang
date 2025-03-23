@@ -87,8 +87,8 @@ class _HomepageState extends State<Homepage> {
               builder: (context, provider, child) {
                 return TabBarView(
                   children: [
-                    _buildPostList(provider.allPost),
-                    _buildPostList(provider.followingPosts),
+                    _buildPostList(provider.allPost, context),
+                    _buildPostList(provider.followingPosts, context),
                   ],
                 );
               },
@@ -153,7 +153,8 @@ class _HomepageState extends State<Homepage> {
       ),
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
-        onPressed: () => goAddPostPage(context, AuthServices().getCurrentUid()!),
+        onPressed: () =>
+            goAddPostPage(context, AuthServices().getCurrentUid()!),
         backgroundColor: AppColors.third,
         child: Icon(Icons.add, color: AppColors.secondary),
       ),
@@ -161,7 +162,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  static Widget _buildPostList(List<Post> posts) {
+  static Widget _buildPostList(List<Post> posts, BuildContext context) {
     return posts.isEmpty
         ? Center(
             child: Text(
@@ -171,16 +172,24 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
           )
-        : ListView.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return MyPostsTile(
-                post: post,
-                onUserTap: () => goUserPage(context, post.uid),
-                onPostTap: () => goPostPage(context, post),
-              );
+        : RefreshIndicator(
+            onRefresh: () async {
+              // Panggil fungsi untuk memperbarui data
+              final databaseProvider =
+                  Provider.of<DatabaseProvider>(context, listen: false);
+              await databaseProvider.loadAllPost();
             },
+            child: ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return MyPostsTile(
+                  post: post,
+                  onUserTap: () => goUserPage(context, post.uid),
+                  onPostTap: () => goPostPage(context, post),
+                );
+              },
+            ),
           );
   }
 }

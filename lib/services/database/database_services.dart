@@ -313,11 +313,15 @@ class DatabaseServices {
 
   // Get list blocked uid
   Future<List<String>> getBlockedUidFromFirebase() async {
-    final currentUserId = _auth.currentUser!.uid;
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      print("User is not signed in.");
+      return []; // Return an empty list instead of throwing an error
+    }
 
     final snapshot = await _db
         .collection("Users")
-        .doc(currentUserId)
+        .doc(currentUser.uid)
         .collection("BlockedUsers")
         .get();
 

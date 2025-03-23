@@ -2,7 +2,6 @@ import 'package:bincang/helper/app_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 class StatisticsPage extends StatelessWidget {
   Future<int> _getCount(String collection, {String? field}) async {
     Query query = FirebaseFirestore.instance.collection(collection);

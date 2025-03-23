@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import '../../widget/my_setting_tile.dart';
 
+import 'package:bincang/admin/screens/user_list_page.dart'; // Import halaman baru
+
 class HomepageAdmin extends StatefulWidget {
   @override
   _HomepageAdminState createState() => _HomepageAdminState();
@@ -21,6 +23,7 @@ class _HomepageAdminState extends State<HomepageAdmin> {
     StatisticsPage(),
     ReportPage(),
     ManagePostsPage(),
+    UserListPage(), // Tambahkan halaman daftar pengguna
   ];
 
   void _onSelectPage(int index) {
@@ -56,6 +59,8 @@ class _HomepageAdminState extends State<HomepageAdmin> {
             _buildDrawerItem(Icons.analytics, "Statistik", 0),
             _buildDrawerItem(Icons.report, "Acc Report", 1),
             _buildDrawerItem(Icons.post_add, "Manajemen Postingan", 2),
+            _buildDrawerItem(
+                Icons.people, "Daftar Pengguna", 3), // Tambahkan opsi baru
             Spacer(),
             MySettingTile(
               title: "Keluar",

@@ -97,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           buildTextField("Nama Lengkap", namaController,
                               validator: (val) =>
                                   val!.isEmpty ? "Wajib diisi" : null),
-                          buildTextField("Email", emailController,
+                          buildTextField("Gunakan Email Aktif", emailController,
                               validator: (val) => val!.contains('@')
                                   ? null
                                   : "Email tidak valid"),

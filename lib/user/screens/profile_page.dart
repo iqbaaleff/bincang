@@ -94,15 +94,35 @@ class _ProfilePageState extends State<ProfilePage> {
           content: Text("Apakah kamu yakin?"),
           actions: [
             TextButton(
+              style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: AppColors.third),
               onPressed: () => Navigator.pop(context),
-              child: Text("Batal"),
+              child: Text(
+                "Batal",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
             TextButton(
+              style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: AppColors.third),
               onPressed: () async {
                 Navigator.pop(context);
                 await databaseProvider.unfollowUser(widget.uid);
               },
-              child: Text("Yakin"),
+              child: Text(
+                "Yakin",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),
