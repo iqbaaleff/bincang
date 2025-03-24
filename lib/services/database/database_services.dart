@@ -1,4 +1,5 @@
 import 'package:bincang/models/comment.dart';
+import 'package:bincang/models/notif.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/services/auth/auth_services.dart';
@@ -176,31 +177,40 @@ class DatabaseServices {
   // Like post
   Future<void> toggleLikeInFirebase(String postId) async {
     try {
-      // Get id
       String uid = _auth.currentUser!.uid;
-      // Pergi ke doc buat postingan
       DocumentReference postDoc = _db.collection('Post').doc(postId);
-      // Eksekusi like
+
       await _db.runTransaction((transaction) async {
-        // Get post data
         DocumentSnapshot postSnapshot = await transaction.get(postDoc);
-        // Get like dari user
         List<String> likedBy = List<String>.from(postSnapshot['likedBy'] ?? []);
-        // Get jumlah like
         int currentLikeCount = postSnapshot['likes'];
-        // If user belum like -> like
+
         if (!likedBy.contains(uid)) {
           likedBy.add(uid);
-
           currentLikeCount++;
-        }
-        // if user sudah like -> unlike
-        else {
+
+          // Kirim notifikasi ke pemilik postingan
+          String receiverUid = postSnapshot['uid'];
+          if (receiverUid != uid) {
+            // Hindari notifikasi ke diri sendiri
+            UserProfile? senderProfile = await getUserFromFirebase(uid);
+            if (senderProfile != null) {
+              await sendNotification(
+                type: 'like',
+                postId: postId,
+                senderUid: uid,
+                senderName: senderProfile.name,
+                senderUsername: senderProfile.username,
+                receiverUid: receiverUid,
+                message: 'Menyukai postingan Anda',
+              );
+            }
+          }
+        } else {
           likedBy.remove(uid);
           currentLikeCount--;
         }
 
-        // Update ke firebase
         transaction
             .update(postDoc, {'likes': currentLikeCount, 'likedBy': likedBy});
       });
@@ -222,21 +232,33 @@ class DatabaseServices {
       String uid = _auth.currentUser!.uid;
       UserProfile? user = await getUserFromFirebase(uid);
 
-      // Buat reference dokumen baru di Firestore (Firestore akan otomatis membuat ID unik)
       DocumentReference docRef = _db.collection('Comments').doc();
+      await docRef.set({
+        'postId': postId,
+        'uid': uid,
+        'name': user!.name,
+        'username': user.username,
+        'message': message,
+        'timestamp': Timestamp.now(),
+        'parentId': parentId,
+      });
 
-      Comment newComment = Comment(
-        id: '',
-        postId: postId,
-        uid: uid,
-        name: user!.name,
-        username: user.username,
-        message: message,
-        timestamp: Timestamp.now(),
-        parentId: parentId, // Bisa null jika komentar utama
-      );
-
-      await _db.collection('Comments').add(newComment.toMap());
+      // Kirim notifikasi ke pemilik postingan
+      DocumentSnapshot postSnapshot =
+          await _db.collection('Post').doc(postId).get();
+      String receiverUid = postSnapshot['uid'];
+      if (receiverUid != uid) {
+        // Hindari notifikasi ke diri sendiri
+        await sendNotification(
+          type: 'comment',
+          postId: postId,
+          senderUid: uid,
+          senderName: user.name,
+          senderUsername: user.username,
+          receiverUid: receiverUid,
+          message: 'Mengomentari postingan Anda: $message',
+        );
+      }
     } catch (e) {
       print("Error adding comment: $e");
     }
@@ -406,6 +428,82 @@ class DatabaseServices {
       return snapshot.docs.map((doc) => UserProfile.fromDocument(doc)).toList();
     } catch (e) {
       return [];
+    }
+  }
+
+  /*
+  NOTIF
+  */
+
+  // Fungsi untuk mengirim notifikasi
+  Future<void> sendNotification({
+    required String type, // 'like' atau 'comment'
+    required String postId,
+    required String senderUid,
+    required String senderName, // Nama user yang memberikan like/comment
+    required String
+        senderUsername, // Username user yang memberikan like/comment
+    required String receiverUid,
+    required String message,
+  }) async {
+    try {
+      await _db.collection('Notifications').add({
+        'type': type,
+        'postId': postId,
+        'senderUid': senderUid,
+        'senderName': senderName,
+        'senderUsername': senderUsername,
+        'receiverUid': receiverUid,
+        'message': message,
+        'timestamp': Timestamp.now(),
+        'isRead': false,
+      });
+    } catch (e) {
+      print("Error sending notification: $e");
+    }
+  }
+
+  // Fungsi untuk mengambil notifikasi
+  Future<List<Notif>> getNotifications(String receiverUid) async {
+    try {
+      QuerySnapshot snapshot = await _db
+          .collection('Notifications')
+          .where('receiverUid', isEqualTo: receiverUid)
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      return snapshot.docs.map((doc) {
+        return Notif.fromDocument(doc);
+      }).toList();
+    } catch (e) {
+      print("Error fetching notifications: $e");
+      return [];
+    }
+  }
+
+  // Fungsi untuk menandai notifikasi sebagai sudah dibaca
+  Future<void> markNotificationAsRead(String notificationId) async {
+    try {
+      await _db.collection('Notifications').doc(notificationId).update({
+        'isRead': true,
+      });
+    } catch (e) {
+      print("Error marking notification as read: $e");
+    }
+  }
+
+  // Fungsi untuk mengambil postingan berdasarkan ID
+  Future<Post?> getPostById(String postId) async {
+    try {
+      DocumentSnapshot doc = await _db.collection('Post').doc(postId).get();
+      if (doc.exists) {
+        return Post.fromDocument(doc);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching post: $e");
+      return null;
     }
   }
 }

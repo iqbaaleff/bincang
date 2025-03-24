@@ -1,8 +1,10 @@
 import 'package:bincang/models/comment.dart';
+import 'package:bincang/models/notif.dart';
 import 'package:bincang/models/post.dart';
 import 'package:bincang/models/user.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class DatabaseProvider extends ChangeNotifier {
@@ -58,7 +60,8 @@ class DatabaseProvider extends ChangeNotifier {
   // Load following posts
   Future<void> loadFollowingPosts() async {
     String? currentUid = _auth.getCurrentUid();
-    final followingUserIds = await _db.getFollowingUidsFromFirebase(currentUid!);
+    final followingUserIds =
+        await _db.getFollowingUidsFromFirebase(currentUid!);
     _followingPosts =
         _allPosts.where((post) => followingUserIds.contains(post.uid)).toList();
     notifyListeners();
@@ -140,11 +143,11 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   // Tambahkan komentar
-  Future<void> addComments(String postId, String message, {String? parentId}) async {
-  await _db.addCommentInFirebase(postId, message, parentId: parentId);
-  await loadComments(postId); // Refresh komentar setelah menambah
-}
-
+  Future<void> addComments(String postId, String message,
+      {String? parentId}) async {
+    await _db.addCommentInFirebase(postId, message, parentId: parentId);
+    await loadComments(postId); // Refresh komentar setelah menambah
+  }
 
   // Hapus komentar
   Future<void> deleteComments(String commentId, String postId) async {
@@ -378,4 +381,45 @@ class DatabaseProvider extends ChangeNotifier {
       print(e);
     }
   }
+
+  /*
+  NOTIF
+  */
+
+  // List notifikasi
+  List<Notif> _notifications = [];
+  List<Notif> get notifications => _notifications;
+
+  // Fungsi untuk mengambil notifikasi
+  Future<void> loadNotifications() async {
+    final currentUid = _auth.getCurrentUid();
+    if (currentUid == null) return;
+
+    try {
+      final notifications = await _db.getNotifications(currentUid);
+      _notifications = notifications;
+      notifyListeners();
+    } catch (e) {
+      print("Error loading notifications: $e");
+    }
+  }
+
+  // Fungsi untuk menandai notifikasi sebagai sudah dibaca
+  Future<void> markNotificationAsRead(String notificationId) async {
+    try {
+      await _db.markNotificationAsRead(notificationId);
+      await loadNotifications(); // Muat ulang notifikasi setelah diperbarui
+    } catch (e) {
+      print("Error marking notification as read: $e");
+    }
+  }
+
+  Future<Post?> getPostById(String postId) async {
+  try {
+    return await _db.getPostById(postId); // Panggil fungsi dari DatabaseServices
+  } catch (e) {
+    print("Error fetching post: $e");
+    return null;
+  }
+}
 }

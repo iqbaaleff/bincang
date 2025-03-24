@@ -4,6 +4,7 @@ import 'package:bincang/models/user.dart';
 import 'package:bincang/user/screens/follow_list_page.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import 'package:bincang/services/database/database_provider.dart';
+import 'package:bincang/user/screens/setting_page.dart';
 import 'package:bincang/widget/my_bio_box.dart';
 import 'package:bincang/widget/my_follow_button.dart';
 import 'package:bincang/widget/my_input_alert_box.dart';
@@ -150,6 +151,21 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingPage(),
+                  ));
+            },
+            icon: Icon(
+              Icons.more_vert,
+              color: AppColors.secondary,
+            ),
+          ),
+        ],
         backgroundColor: AppColors.primary,
         title: Text(
           isLoading ? '' : user!.name,

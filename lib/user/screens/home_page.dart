@@ -1,3 +1,4 @@
+import 'package:bincang/user/screens/notif_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bincang/user/screens/profile_page.dart';
 import 'package:bincang/user/screens/search_page.dart';
@@ -96,8 +97,8 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         SearchPage(),
+        NotifPage(),
         ProfilePage(uid: AuthServices().getCurrentUid()!),
-        SettingPage(),
       ];
 
   void _onItemTapped(int index) {
@@ -137,13 +138,13 @@ class _HomepageState extends State<Homepage> {
             ),
             SizedBox(width: 40), // Untuk memberi ruang bagi FAB
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.notifications),
               color:
                   _selectedIndex == 2 ? AppColors.third : AppColors.secondary,
               onPressed: () => _onItemTapped(2),
             ),
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.person),
               color:
                   _selectedIndex == 3 ? AppColors.third : AppColors.secondary,
               onPressed: () => _onItemTapped(3),
