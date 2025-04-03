@@ -8,11 +8,12 @@ class UserListPage extends StatelessWidget {
 
   Future<void> _deleteUser(String userId, BuildContext context) async {
     try {
-      WriteBatch batch = _firestore.batch();
+      WriteBatch deleteBatch = _firestore.batch();
+      WriteBatch updateBatch = _firestore.batch();
 
       // Hapus dokumen pengguna
       DocumentReference userDoc = _firestore.collection('Users').doc(userId);
-      batch.delete(userDoc);
+      deleteBatch.delete(userDoc);
 
       // Hapus semua postingan pengguna
       QuerySnapshot userPosts = await _firestore
@@ -20,7 +21,7 @@ class UserListPage extends StatelessWidget {
           .where('uid', isEqualTo: userId)
           .get();
       for (var post in userPosts.docs) {
-        batch.delete(post.reference);
+        deleteBatch.delete(post.reference);
       }
 
       // Hapus semua komentar pengguna
@@ -29,33 +30,90 @@ class UserListPage extends StatelessWidget {
           .where('uid', isEqualTo: userId)
           .get();
       for (var comment in userComments.docs) {
-        batch.delete(comment.reference);
+        deleteBatch.delete(comment.reference);
       }
 
-      // Hapus like yang dilakukan oleh pengguna
+      // Commit batch pertama untuk menghapus data
+      await deleteBatch.commit();
+      print("Batch pertama selesai: Semua data pengguna dihapus");
+
+      // Hapus like yang dilakukan oleh pengguna dari semua postingan
       QuerySnapshot allPosts = await _firestore.collection('Post').get();
       for (var post in allPosts.docs) {
         Map<String, dynamic> postData = post.data() as Map<String, dynamic>;
         var likedBy = postData['likedBy'] as List<dynamic>? ?? [];
         if (likedBy.contains(userId)) {
-          batch.update(post.reference, {
+          updateBatch.update(post.reference, {
             'likedBy': FieldValue.arrayRemove([userId]),
             'likes': FieldValue.increment(-1),
           });
         }
       }
 
-      // Commit batch untuk menghapus semua data sekaligus
-      await batch.commit();
+      // Commit batch kedua untuk update data
+      await updateBatch.commit();
+      print("Batch kedua selesai: Data postingan diperbarui");
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Akun dan semua data terkait berhasil dihapus")),
-      );
+      if (context.mounted) { // Only show if context is still valid
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Akun dan semua data terkait berhasil dihapus")),
+    );
+  }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal menghapus akun: $e")),
-      );
+      if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Gagal menghapus akun: $e")),
+    );
+  }
     }
+  }
+
+  Future<void> _showDeleteConfirmationDialog(
+      String userId, BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Hapus'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Apakah Anda yakin ingin menghapus pengguna ini?'),
+                SizedBox(height: 8),
+                Text(
+                    'Semua data terkait (postingan, komentar, dll) juga akan dihapus.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: AppColors.third),
+              child: Text('Batal', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: AppColors.third),
+              child: Text('Hapus', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteUser(userId, context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -100,7 +158,8 @@ class UserListPage extends StatelessWidget {
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _deleteUser(userId, context),
+                      onPressed: () =>
+                          _showDeleteConfirmationDialog(userId, context),
                     ),
                   ),
                 );

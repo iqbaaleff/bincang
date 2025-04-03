@@ -3,15 +3,16 @@ import 'package:bincang/admin/screens/report_page.dart';
 import 'package:bincang/admin/screens/statistics_page.dart';
 import 'package:bincang/helper/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 import 'package:bincang/services/auth/auth_services.dart';
 import '../../widget/my_setting_tile.dart';
 
 import 'package:bincang/admin/screens/user_list_page.dart'; // Import halaman baru
 
 class HomepageAdmin extends StatefulWidget {
+  const HomepageAdmin({super.key});
+
   @override
+  
   _HomepageAdminState createState() => _HomepageAdminState();
 }
 
@@ -48,7 +49,7 @@ class _HomepageAdminState extends State<HomepageAdmin> {
         backgroundColor: AppColors.secondary,
         child: Column(
           children: [
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 100,
               child: Center(

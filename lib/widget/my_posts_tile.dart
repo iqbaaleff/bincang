@@ -136,11 +136,26 @@ class _MyPostsTileState extends State<MyPostsTile> {
         actions: [
           // Batal
           TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: AppColors.third,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
             onPressed: () => Navigator.pop(context),
-            child: Text("Batal"),
+            child: Text("Batal",
+                style: TextStyle(
+                  color: AppColors.secondary,
+                )),
           ),
           // Laporkan
           TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: AppColors.third,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
             onPressed: () async {
               await databaseProvider.reportUser(
                   widget.post.id, widget.post.uid);
@@ -152,7 +167,12 @@ class _MyPostsTileState extends State<MyPostsTile> {
                 ),
               );
             },
-            child: Text("Laporkan"),
+            child: Text(
+              "Laporkan",
+              style: TextStyle(
+                color: AppColors.secondary,
+              ),
+            ),
           ),
         ],
       ),

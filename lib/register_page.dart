@@ -24,6 +24,57 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController pwController = TextEditingController();
   final TextEditingController pwConController = TextEditingController();
 
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  // Validator for full name (no numbers or emojis)
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Wajib diisi';
+    }
+    if (RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Nama tidak boleh mengandung angka';
+    }
+    if (RegExp(
+      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])',
+    ).hasMatch(value)) {
+      return 'Nama tidak boleh mengandung emoji';
+    }
+    return null;
+  }
+
+  // Validator for phone number (only numbers, no letters or emojis)
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Wajib diisi';
+    }
+    if (RegExp(r'[a-zA-Z]').hasMatch(value)) {
+      return 'Nomor telepon hanya boleh mengandung angka';
+    }
+    if (RegExp(
+      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])',
+    ).hasMatch(value)) {
+      return 'Nomor telepon tidak boleh mengandung emoji';
+    }
+    return null;
+  }
+
+  // Validator for password (no emojis)
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Wajib diisi';
+    }
+    if (value.length < 6) {
+      return 'Minimal 6 karakter';
+    }
+    if (RegExp(
+      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])',
+    ).hasMatch(value)) {
+      return 'Password tidak boleh mengandung emoji';
+    }
+    return null;
+  }
+
   void register() async {
     if (!_formKey.currentState!.validate()) return;
     showLoadingCircle(context);
@@ -45,20 +96,76 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Widget buildTextField(String label, TextEditingController controller,
-      {bool isPassword = false, String? Function(String?)? validator}) {
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool isPassword = false,
+    String? Function(String?)? validator,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
-        obscureText: isPassword,
+        obscureText: isPassword ? _obscurePassword : false,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                )
+              : null,
         ),
         validator: validator,
+      ),
+    );
+  }
+
+  Widget buildConfirmPasswordField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: pwConController,
+        obscureText: _obscureConfirmPassword,
+        decoration: InputDecoration(
+          labelText: "Konfirmasi Password",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+            ),
+            onPressed: () {
+              setState(() {
+                _obscureConfirmPassword = !_obscureConfirmPassword;
+              });
+            },
+          ),
+        ),
+        validator: (val) {
+          if (val == null || val.isEmpty) {
+            return 'Wajib diisi';
+          }
+          if (val != pwController.text) {
+            return 'Password tidak cocok';
+          }
+          if (RegExp(
+            r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])',
+          ).hasMatch(val)) {
+            return 'Password tidak boleh mengandung emoji';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -95,25 +202,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.third)),
                           buildTextField("Nama Lengkap", namaController,
-                              validator: (val) =>
-                                  val!.isEmpty ? "Wajib diisi" : null),
+                              validator: validateName),
                           buildTextField("Gunakan Email Aktif", emailController,
                               validator: (val) => val!.contains('@')
                                   ? null
                                   : "Email tidak valid"),
                           buildTextField("No Telepon", noHpController,
-                              validator: (val) =>
-                                  val!.isNotEmpty ? null : "Wajib diisi"),
+                              validator: validatePhone),
                           buildTextField("Password", pwController,
-                              isPassword: true,
-                              validator: (val) => val!.length < 6
-                                  ? "Minimal 6 karakter"
-                                  : null),
-                          buildTextField("Konfirmasi Password", pwConController,
-                              isPassword: true,
-                              validator: (val) => val == pwController.text
-                                  ? null
-                                  : "Password tidak cocok"),
+                              isPassword: true, validator: validatePassword),
+                          buildConfirmPasswordField(),
                           SizedBox(
                             width: size.width * 0.5,
                             child: ElevatedButton(

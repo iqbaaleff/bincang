@@ -1,15 +1,14 @@
-import 'package:bincang/admin/screens/manage_post_page.dart';
-import 'package:bincang/admin/screens/report_page.dart';
-import 'package:bincang/admin/screens/statistics_page.dart';
 import 'package:bincang/helper/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:bincang/services/auth/auth_services.dart';
-import '../../widget/my_setting_tile.dart';
+
 
 class ReportPage extends StatefulWidget {
+  const ReportPage({super.key});
+
   @override
+  
   _ReportPageState createState() => _ReportPageState();
 }
 

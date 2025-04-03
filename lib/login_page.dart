@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
+  bool _obscurePassword = true; // Add this line for password visibility toggle
 
   @override
   void dispose() {
@@ -213,10 +214,23 @@ class _LoginPageState extends State<LoginPage> {
                                 vertical: size.height * 0.01),
                             child: TextFormField(
                               controller: pwController,
-                              obscureText: true,
-                              decoration: const InputDecoration(
+                              obscureText:
+                                  _obscurePassword, // Use the variable here
+                              decoration: InputDecoration(
                                 labelText: "Password",
                                 prefixIcon: Icon(Icons.lock),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(12),

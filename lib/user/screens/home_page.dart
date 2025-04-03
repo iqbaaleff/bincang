@@ -63,6 +63,7 @@ class _HomepageState extends State<Homepage> {
             appBar: AppBar(
               backgroundColor: AppColors.primary,
               surfaceTintColor: AppColors.third,
+              
               title: Text(
                 "Bincang",
                 style: TextStyle(
@@ -107,9 +108,6 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-  void _logout() {
-    _auth.logout();
-  }
 
   @override
   Widget build(BuildContext context) {

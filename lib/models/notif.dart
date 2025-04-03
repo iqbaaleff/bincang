@@ -27,17 +27,20 @@ class Notif {
 
   // Factory method untuk membuat objek Notif dari DocumentSnapshot
   factory Notif.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>; // Konversi data ke Map
+
     return Notif(
       id: doc.id,
-      type: doc['type'],
-      postId: doc['postId'],
-      senderUid: doc['senderUid'],
-      senderName: doc['senderName'],
-      senderUsername: doc['senderUsername'],
-      receiverUid: doc['receiverUid'],
-      message: doc['message'],
-      timestamp: doc['timestamp'],
-      isRead: doc['isRead'],
+      type: data['type'] ?? 'unknown',
+      postId: data['postId'] ?? '',
+      senderUid: data['senderUid'] ?? '',
+      senderName:
+          data.containsKey('senderName') ? data['senderName'] : 'Unknown',
+      senderUsername: data['senderUsername'] ?? '',
+      receiverUid: data['receiverUid'] ?? '',
+      message: data['message'] ?? '',
+      timestamp: data['timestamp'] ?? Timestamp.now(),
+      isRead: data['isRead'] ?? false,
     );
   }
 
